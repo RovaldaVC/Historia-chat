@@ -1,0 +1,28 @@
+[tool.uvicorn]
+app = "main:app"
+port = 8000
+# this way you can import your app anywhere.
+
+[project.scripts]
+we-chat = "main:app"   # if your main.py has `app = FastAPI()`
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "historia-chat"
+version = "0.1.0"
+description = "A WE_CHAT based app for my country"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "fastapi>=0.104.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.1.1",
+    "black>=26.5.1",
+]
