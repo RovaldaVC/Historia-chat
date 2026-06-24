@@ -21,10 +21,15 @@ The API will be available at http://127.0.0.1:8000.
 
 ## Project Structure
 ├── .gitignore
+
 ├── main.py               # FastAPI application entry point
+
 ├── project.excalidraw    # Design & progress sketches
+
 ├── pyproject.toml        # Project metadata & dependencies
+
 ├── README.md
+
 └── schema.py             # Pydantic models / DB schema
 
 
