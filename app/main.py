@@ -1,11 +1,12 @@
 # -- Imports -- #
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from database.database import get_db
+from database.database import get_db, engine, Base
 from database.schemas import UserResponse, UserCreate
 from database.crud import crud_get_user, crud_post_user, crud_update_user, crud_delete_user
 
 # -- Main Engine -- #
+Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 # -- Routes -- #
