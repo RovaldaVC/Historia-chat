@@ -9,4 +9,4 @@ class User(Base):
     family = Column(String(25))
     username = Column(String(100), nullable=False, unique=True)
     password = Column(String(100), nullable=False)
-    active = Column(Boolean())
+    active = Column(Boolean()) # Does this really work?
