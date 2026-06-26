@@ -4,15 +4,15 @@ from typing import Optional
 
 class UserCreate(BaseModel):
     name : str
-    family: Optional(str) #Optional doesn't work.
+    family: Optional[str] #Optional doesn't work.
     username: str
     password: str
     active: bool
     
-class UserResponse(BaseModel):
+class UserResponse(UserCreate):
     id:int
     name:str
-    family:Optional(str)
+    family:Optional[str]
     username:str
     active:bool
     
