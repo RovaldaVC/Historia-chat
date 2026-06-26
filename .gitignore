@@ -16,3 +16,5 @@ build/
 *.egg-info/
 
 historia_chat.egg-info/
+
+your_database.db

@@ -1,13 +1,17 @@
 from database.models import User
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
+from database.schemas import UserCreate
+from sqlalchemy.orm import Session
+from database.database import get_db
 
-def crud_get_user(user_id, db):
+
+def crud_get_user(user_id:int, db:Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
     return user
 
-def crud_post_user(user, db):
+def crud_post_user(user:UserCreate, db:Session = Depends(get_db)):
     if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(status_code=422, detail="User already exists.")
     
@@ -17,7 +21,7 @@ def crud_post_user(user, db):
     db.refresh(new_user)
     return new_user
 
-def crud_update_user(user_id, user, db):
+def crud_update_user(user_id:int, user:UserCreate, db:Session):
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
@@ -29,12 +33,11 @@ def crud_update_user(user_id, user, db):
     db.refresh(db_user)
     return db_user
 
-def crud_delete_user(user_id, db):
+def crud_delete_user(user_id:int, db:Session = Depends(get_db)):
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
     
     db.delete(db_user)
     db.commit()
-    db.refresh(db_user)
     return {"message":"User deleted!"}
