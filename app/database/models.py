@@ -9,4 +9,5 @@ class User(Base):
     family = Column(String(100), nullable=True, default=None)
     username = Column(String(100), nullable=False, unique=True)
     password = Column(String(100), nullable=False)
+    rule = Column(String(100), nullable=False) #New here.
     active = Column(Boolean, default=False)

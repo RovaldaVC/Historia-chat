@@ -7,6 +7,7 @@ class UserCreate(BaseModel):
     family: Optional[str] #Optional doesn't work.
     username: str
     password: str
+    role: str
     active: bool
     
 class UserResponse(UserCreate):

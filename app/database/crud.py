@@ -15,7 +15,7 @@ def crud_post_user(user:UserCreate, db:Session = Depends(get_db)):
     if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(status_code=422, detail="User already exists.")
     
-    new_user = User(**user.dict())
+    new_user = User(**user.dict(), rule="user")
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -41,3 +41,9 @@ def crud_delete_user(user_id:int, db:Session = Depends(get_db)):
     db.delete(db_user)
     db.commit()
     return {"message":"User deleted!"}
+
+def crud_get_all_users(db:Session = Depends(get_db)):
+    if not db.query(User).filter(User.rule == "user"):
+        return{"status":"Error", "msessage":"restricted."}, 403
+    db_user = db.query(User)
+    return db_user

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from database.database import get_db, engine, Base
 from database.models import User
 from database.schemas import UserResponse, UserCreate
-from database.crud import crud_get_user, crud_post_user, crud_update_user, crud_delete_user
+from database.crud import crud_get_user, crud_post_user, crud_update_user, crud_delete_user, crud_get_all_users
 
 # -- Main Engine -- #
 Base.metadata.create_all(bind=engine)
@@ -26,3 +26,8 @@ def update_user(user_id:int, user:UserCreate, db:Session = Depends(get_db)):
 @app.delete("/users/{user_id}", response_model=UserResponse)
 def delete_user(user_id:int, db:Session = Depends(get_db)):
     return crud_delete_user(user_id, db)
+
+@app.get("/users/", response_model=UserResponse)
+def get_all_users(db:Session = Depends(get_db)):
+    crud_get_all_users(db)
+    # Only some people should get access to this part. I have to make restriction.
