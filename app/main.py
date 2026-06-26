@@ -23,11 +23,10 @@ def create_user(user:UserCreate, db:Session = Depends(get_db)):
 def update_user(user_id:int, user:UserCreate, db:Session = Depends(get_db)):
     return crud_update_user(user_id, user, db)
     
-@app.delete("/users/{user_id}", response_model=UserResponse)
+@app.delete("/users/{user_id}") #No response model for Delete part.
 def delete_user(user_id:int, db:Session = Depends(get_db)):
     return crud_delete_user(user_id, db)
 
 @app.get("/users/", response_model=UserResponse)
 def get_all_users(db:Session = Depends(get_db)):
     crud_get_all_users(db)
-    # Only some people should get access to this part. I have to make restriction.

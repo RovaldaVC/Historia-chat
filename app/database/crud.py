@@ -15,7 +15,14 @@ def crud_post_user(user:UserCreate, db:Session = Depends(get_db)):
     if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(status_code=422, detail="User already exists.")
     
-    new_user = User(**user.dict(), rule="user")
+    user_data = {
+        "name": user.name,
+        "family": user.family,
+        "username":user.username,
+        "password":user.password,
+        "role":"user"
+    }
+    new_user = User(**user_data)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -33,7 +40,7 @@ def crud_update_user(user_id:int, user:UserCreate, db:Session):
     db.refresh(db_user)
     return db_user
 
-def crud_delete_user(user_id:int, db:Session = Depends(get_db)):
+def crud_delete_user(user_id:int, db:Session):
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
@@ -43,7 +50,6 @@ def crud_delete_user(user_id:int, db:Session = Depends(get_db)):
     return {"message":"User deleted!"}
 
 def crud_get_all_users(db:Session = Depends(get_db)):
-    if not db.query(User).filter(User.rule == "user"):
-        return{"status":"Error", "msessage":"restricted."}, 403
-    db_user = db.query(User)
-    return db_user
+    # Here we have to validate if the user is an admin to process further.
+    all_users = db.query(User).all()
+    return all_users
