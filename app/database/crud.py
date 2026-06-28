@@ -3,6 +3,7 @@ from fastapi import HTTPException, Depends
 from database.schemas import UserCreate
 from sqlalchemy.orm import Session
 from database.database import get_db
+from security.hash_password import get_password_hash
 
 
 def crud_get_user(user_id:int, db:Session):
@@ -19,7 +20,7 @@ def crud_post_user(user:UserCreate, db:Session):
         "name": user.name,
         "family": user.family,
         "username":user.username,
-        "password":user.password,
+        "password":get_password_hash(user.password),
         "role":"user"
     }
     new_user = User(**user_data)
