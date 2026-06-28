@@ -4,10 +4,10 @@ from typing import Optional
 
 class UserCreate(BaseModel):
     name : str
-    family: Optional[str] #Optional doesn't work.
+    family: Optional[str] = None
     username: str
     password: str
-    role: str
+    role: str  = "user"
     active: bool
     
 class UserResponse(UserCreate):
