@@ -1,44 +1,49 @@
-from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
+import secrets
 from datetime import datetime, timedelta
-from fastapi import HTTPException, Depends
-from database.models import User
+from fastapi import Request, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from database.database import get_db
-from fastapi.security import OAuth2PasswordRequestForm
-# Get explanation from Ai or yourself on documentation.
+from database.models import User, UserSession
 
-SECRET_KEY = "your-secret-key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SESSION_EXPIRE_DAYS = 7
+COOKIE_NAME = "historia_session"
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-def create_access_token(data: dict):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-def get_current_user(token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
-        status_code=401,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        return username
-    except JWTError:
-        raise credentials_exception
+def create_session(db: Session, user_id: int) -> str:
+    token = secrets.token_urlsafe(32)
+    expires = datetime.utcnow() + timedelta(days=SESSION_EXPIRE_DAYS)
     
-def login_for_access_token_function(form_data: OAuth2PasswordRequestForm = Depends(), db:Session = Depends(get_db)):    
-    user = db.query(User).filter(User.username == form_data.username).first()
-    if user is None or user.password != form_data.password:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    access_token = create_access_token(data={"sub": user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+    new_session = UserSession(
+        session_token=token,
+        user_id=user_id,
+        expires_at=expires
+    )
+    db.add(new_session)
+    db.commit()
+    return token
+
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+    session_token = request.cookies.get(COOKIE_NAME)
+    
+    if not session_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated. Please log in."
+        )
+
+    session_record = db.query(UserSession).filter(UserSession.session_token == session_token).first()
+    
+    if not session_record or session_record.expires_at < datetime.utcnow():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session expired or invalid."
+        )
+        
+    return session_record.user
+
+def get_current_admin_user(current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to perform this action."
+        )
+    return current_user

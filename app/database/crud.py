@@ -5,13 +5,13 @@ from sqlalchemy.orm import Session
 from database.database import get_db
 
 
-def crud_get_user(user_id:int, db:Session = Depends(get_db)):
+def crud_get_user(user_id:int, db:Session):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
     return user
 
-def crud_post_user(user:UserCreate, db:Session = Depends(get_db)):
+def crud_post_user(user:UserCreate, db:Session):
     if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(status_code=422, detail="User already exists.")
     
@@ -49,7 +49,6 @@ def crud_delete_user(user_id:int, db:Session):
     db.commit()
     return {"message":"User deleted!"}
 
-def crud_get_all_users(db:Session = Depends(get_db)):
-    # Here we have to validate if the user is an admin to process further.
+def crud_get_all_users(db:Session):
     all_users = db.query(User).all()
     return all_users
