@@ -6,8 +6,8 @@ from database.models import User, UserSession
 from database.schemas import UserResponse, UserCreate
 from database.crud import crud_get_user, crud_post_user, crud_update_user, crud_delete_user, crud_get_all_users
 from fastapi.security import OAuth2PasswordRequestForm
-from security.authentication import create_session, COOKIE_NAME, get_current_admin_user
-
+from security.authentication import create_session, COOKIE_NAME, get_current_admin_user, get_current_user
+from security.hash_password import verify_password
 # -- Main Engine -- #
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -20,7 +20,7 @@ def login(
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.username == form_data.username).first()
-    if not user or user.password != form_data.password:
+    if not user or verify_password(form_data.password, user.password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     session_token = create_session(db, user.id)
     response.set_cookie(
@@ -52,14 +52,13 @@ def get_user(user_id:int, db:Session = Depends(get_db)):
 def create_user(user:UserCreate, db:Session = Depends(get_db)):
     return crud_post_user(user, db)
     
-@app.put("/users/{user_id}", response_model=UserResponse)
-def update_user(user_id:int, user:UserCreate, db:Session = Depends(get_db)):
-    return crud_update_user(user_id, user, db)
+@app.put("/users/me", response_model=UserResponse)
+def update_user(user:UserCreate, db:Session = Depends(get_db), current_user:User = Depends(get_current_user)):
+    return crud_update_user(current_user.id, user, db)
     
 @app.delete("/users/{user_id}")
-def delete_user(user_id:int, db:Session = Depends(get_db)):
-    return crud_delete_user(user_id, db) 
-# This must be for admins.
+def delete_user(user_id:int, db:Session = Depends(get_db), current_user: User = Depends(get_current_admin_user)):
+    return crud_delete_user(user_id, db)
 # we have to create one for users to delete their account.
 
 @app.get("/users/", response_model=list[UserResponse])
@@ -67,3 +66,15 @@ def get_all_users(db:Session = Depends(get_db),
                   current_user:User = Depends(get_current_admin_user)):
     users = crud_get_all_users(db)
     return users
+
+@app.delete("/users/me")
+def delete_own_account(
+    response:Response,
+    db:Session = Depends(get_db),
+    current_user:User = Depends(get_current_user)
+):
+    db.query(UserSession).filter(UserSession.user_id == current_user.id).delete()
+    crud_delete_user(current_user.id, db)
+    response.delete_cookie(COOKIE_NAME)
+    
+    return{"message": "Your account has been successfully deleted. We're sad to see you go!"}
