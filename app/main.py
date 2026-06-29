@@ -20,7 +20,7 @@ def login(
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.username == form_data.username).first()
-    if not user or verify_password(form_data.password, user.password):
+    if not user or not verify_password(form_data.password, user.password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     session_token = create_session(db, user.id)
     response.set_cookie(
@@ -45,7 +45,7 @@ def logout(response: Response, request: Request, db: Session = Depends(get_db)):
     return {"message": "Successfully logged out."}
      
 @app.get("/users/{user_id}", response_model=UserResponse)
-def get_user(user_id:int, db:Session = Depends(get_db)):
+def get_user(user_id:int, db:Session = Depends(get_db), urrent_user:User = Depends(get_current_admin_user)):
     return crud_get_user(user_id, db)
 
 @app.post("/users/", response_model=UserResponse)
