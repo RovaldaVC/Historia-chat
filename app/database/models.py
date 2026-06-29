@@ -1,7 +1,6 @@
 from database.database import Base
-from sqlalchemy import  Column, ForeignKey, Integer, String, Boolean
+from sqlalchemy import  Column, ForeignKey, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
-import datetime
 
 class User(Base):
     __tablename__ = "users"
@@ -18,5 +17,5 @@ class UserSession(Base):
     id = Column(Integer, primary_key=True, index=True)
     session_token = Column(String, unique=True, index=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    expires_at = Column(datetime, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
     user = relationship("User")

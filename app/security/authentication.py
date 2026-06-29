@@ -1,5 +1,5 @@
 import secrets
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from fastapi import Request, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from database.database import get_db
@@ -10,7 +10,7 @@ COOKIE_NAME = "historia_session"
 
 def create_session(db: Session, user_id: int) -> str:
     token = secrets.token_urlsafe(32)
-    expires = datetime.utcnow() + timedelta(days=SESSION_EXPIRE_DAYS)
+    expires = datetime.now(timezone.utc) + timedelta(days=SESSION_EXPIRE_DAYS)
     
     new_session = UserSession(
         session_token=token,
