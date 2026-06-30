@@ -20,7 +20,18 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(), 
     db: Session = Depends(get_db)
 ):
-    return crud_login(response, form_data, db)
+    auth_data = crud_login(form_data.username, form_data.password, db)
+    
+    response.set_cookie(
+        key=COOKIE_NAME,
+        value=auth_data["session_token"],
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax",
+        max_age=7 * 24 * 60 * 60
+    )
+    
+    return {"message": f"Welcome to Historia Chat, {auth_data['user_name']}!"}
     
 @app.post("/logout")
 def logout(response: Response, request: Request, db: Session = Depends(get_db)):
