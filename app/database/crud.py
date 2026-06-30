@@ -35,7 +35,12 @@ def crud_update_user(user_id:int, user:UserCreate, db:Session):
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
     
-    for field, value in user.dict().items():
+    update_data = user.model_dump()
+    
+    if "password" in update_data and update_data["password"]:
+        update_data["password"] = get_password_hash(update_data["password"])
+    
+    for field, value in update_data.items():
         setattr(db_user, field, value)
     
     db.commit()

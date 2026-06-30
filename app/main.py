@@ -27,7 +27,7 @@ def logout(response: Response, request: Request, db: Session = Depends(get_db)):
     return crud_logout(response, request, db)
      
 @app.get("/users/{user_id}", response_model=UserResponse)
-def get_user(user_id:int, db:Session = Depends(get_db), urrent_user:User = Depends(get_current_admin_user)):
+def get_user(user_id:int, db:Session = Depends(get_db), current_user:User = Depends(get_current_admin_user)):
     return crud_get_user(user_id, db)
 
 @app.post("/users/", response_model=UserResponse)
