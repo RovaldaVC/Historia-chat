@@ -22,21 +22,37 @@ The API will be available at http://127.0.0.1:8000.
 
 ## Project Structure
 ├── app
+
 │   ├── database
+
 │   │   ├── crud.py
+
 │   │   ├── database.py
+
 │   │   ├── models.py
+
 │   │   └── schemas.py
+
 │   ├── __init__.py
+
 │   ├── main.py
+
 │   ├── security
+
 │   │   ├── authentication.py
+
 │   │   └── hash_password.py
+
 │   └── your_database.db
+
 ├── excalidraw
+
 │   ├── 1.excalidraw
+
 │   └── 2.excalidraw
+
 ├── pyproject.toml
+
 └── README.md
 
 ## API Documentation
