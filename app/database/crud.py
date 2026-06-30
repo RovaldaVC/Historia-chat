@@ -60,24 +60,15 @@ def crud_get_all_users(db:Session):
     all_users = db.query(User).all()
     return all_users
 
-def crud_login(
-    response: Response, 
-    form_data: OAuth2PasswordRequestForm = Depends(), 
-    db: Session = Depends(get_db)
-):
-    user = db.query(User).filter(User.username == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.password):
+def crud_login(form_data_username: str, form_data_password: str, db: Session):
+    user = db.query(User).filter(User.username == form_data_username).first()
+    
+    if not user or not verify_password(form_data_password, user.password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
+        
     session_token = create_session(db, user.id)
-    response.set_cookie(
-        key=COOKIE_NAME,
-        value=session_token,
-        httponly=True,
-        secure=False,
-        samesite="lax",
-        max_age=7 * 24 * 60 * 60
-    )
-    return {"message": f"Welcome to Historia Chat, {user.name}!"}
+    
+    return {"session_token": session_token, "user_name": user.name}
 
 def crud_logout(response: Response, request: Request, db: Session = Depends(get_db)):
     session_token = request.cookies.get(COOKIE_NAME)
