@@ -6,9 +6,9 @@
     {
       "id": "UpXyrX4kPH6pCpWEGtU-O",
       "type": "rectangle",
-      "x": 331.07421875,
-      "y": 94.32310267857162,
-      "width": 179.28125,
+      "x": -198.60296088739597,
+      "y": -8.081679688488578,
+      "width": 209.3001053025685,
       "height": 118,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -23,8 +23,8 @@
       "index": "a2",
       "roundness": null,
       "seed": 1894027557,
-      "version": 145,
-      "versionNonce": 2056791556,
+      "version": 642,
+      "versionNonce": 1684790315,
       "isDeleted": false,
       "boundElements": [
         {
@@ -48,16 +48,16 @@
           "type": "arrow"
         }
       ],
-      "updated": 1782921846227,
+      "updated": 1782922810852,
       "link": null,
       "locked": false
     },
     {
       "id": "4yaVoCNu8CpU60P1mJdFE",
       "type": "text",
-      "x": 336.2506561279297,
-      "y": 99.32310267857162,
-      "width": 168.92837524414062,
+      "x": -192.86512442263515,
+      "y": -3.0816796884885775,
+      "width": 197.82443237304688,
       "height": 108,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -72,14 +72,14 @@
       "index": "a2V",
       "roundness": null,
       "seed": 1336136971,
-      "version": 311,
-      "versionNonce": 1370009029,
+      "version": 600,
+      "versionNonce": 1989484235,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782919573276,
+      "updated": 1782922810852,
       "link": null,
       "locked": false,
-      "text": "I asked for feedback\nfrom college students\nin higher terms. in this\npart I'm going to fix the\nbugs they told me. ",
+      "text": "I asked for feedback from\ncollege students in higher\nterms. in this part I'm going\nto fix the bugs they told\nme. ",
       "fontSize": 16,
       "fontFamily": 6,
       "textAlign": "center",
@@ -92,10 +92,10 @@
     {
       "id": "ejnGWDR0wNv_U0vs1j4XW",
       "type": "arrow",
-      "x": 510.484375,
-      "y": 94.87388392857162,
-      "width": 72.81640625,
-      "height": 80.93359375,
+      "x": 10.84763472968757,
+      "y": -7.637632381446792,
+      "width": 85.00878645078394,
+      "height": 65.24975996169775,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -111,11 +111,11 @@
         "type": 2
       },
       "seed": 1712792875,
-      "version": 66,
-      "versionNonce": 2140506981,
+      "version": 888,
+      "versionNonce": 290380171,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782919559677,
+      "updated": 1782922811183,
       "link": null,
       "locked": false,
       "points": [
@@ -124,20 +124,20 @@
           0
         ],
         [
-          72.81640625,
-          -80.93359375
+          85.00878645078394,
+          -65.24975996169775
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "UpXyrX4kPH6pCpWEGtU-O",
-        "focus": 0.2605212646231047,
+        "focus": 0.15707987629216041,
         "gap": 1
       },
       "endBinding": {
         "elementId": "NlQ2U6RWlKKLmNvJtcFYZ",
-        "focus": 0.5564764671571042,
-        "gap": 2.819111153415647
+        "focus": 0.5564764671571051,
+        "gap": 2.5734977865096047
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -146,10 +146,10 @@
     {
       "id": "NlQ2U6RWlKKLmNvJtcFYZ",
       "type": "rectangle",
-      "x": 584.73046875,
-      "y": -75.13783482142838,
-      "width": 276.9921875,
-      "height": 86.6484375,
+      "x": 97.52549557782072,
+      "y": -144.70338376003502,
+      "width": 323.37176370500987,
+      "height": 69.85714443121672,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -163,8 +163,8 @@
       "index": "a5",
       "roundness": null,
       "seed": 1891966987,
-      "version": 181,
-      "versionNonce": 1906910496,
+      "version": 477,
+      "versionNonce": 1819611845,
       "isDeleted": false,
       "boundElements": [
         {
@@ -180,16 +180,16 @@
           "type": "arrow"
         }
       ],
-      "updated": 1782920153438,
+      "updated": 1782922810852,
       "link": null,
       "locked": false
     },
     {
       "id": "w_3HZXg2w4O8XqTSORmMQ",
       "type": "text",
-      "x": 599.7302856445312,
-      "y": -53.413616071428386,
-      "width": 246.9925537109375,
+      "x": 124.57107286489597,
+      "y": -131.37481154442668,
+      "width": 269.2806091308594,
       "height": 43.2,
       "angle": 0,
       "strokeColor": "#e03131",
@@ -204,14 +204,14 @@
       "index": "a6",
       "roundness": null,
       "seed": 1625302885,
-      "version": 60,
-      "versionNonce": 1074779755,
+      "version": 335,
+      "versionNonce": 1434837323,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782919602129,
+      "updated": 1782922810852,
       "link": null,
       "locked": false,
-      "text": "Just one gap: no max length check\non password before hashing",
+      "text": "Just one gap: no max length check on\npassword before hashing",
       "fontSize": 16,
       "fontFamily": 6,
       "textAlign": "center",
@@ -224,10 +224,10 @@
     {
       "id": "rAv37RvKKQpXqWLsQGF9d",
       "type": "arrow",
-      "x": 410.1328125,
-      "y": 93.00669642857162,
-      "width": 2.40234375,
-      "height": 74.62109375,
+      "x": -106.30679496403263,
+      "y": -9.14298424503528,
+      "width": 2.257717225054023,
+      "height": 47.55116192496317,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -243,11 +243,11 @@
         "type": 2
       },
       "seed": 1652029125,
-      "version": 77,
-      "versionNonce": 135519051,
+      "version": 648,
+      "versionNonce": 48560331,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782918756385,
+      "updated": 1782922831966,
       "link": null,
       "locked": false,
       "points": [
@@ -256,17 +256,21 @@
           0
         ],
         [
-          2.40234375,
-          -74.62109375
+          2.257717225054023,
+          -47.55116192496317
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "UpXyrX4kPH6pCpWEGtU-O",
-        "focus": -0.13131540935142688,
-        "gap": 1.31640625
+        "focus": -0.1415113097659744,
+        "gap": 1.0613045565467019
       },
-      "endBinding": null,
+      "endBinding": {
+        "elementId": "-L6lOlVG0YGGHk6z1Fj4m",
+        "focus": -0.034861530059691156,
+        "gap": 1.3453895076541755
+      },
       "startArrowhead": null,
       "endArrowhead": "arrow",
       "elbowed": false
@@ -274,10 +278,10 @@
     {
       "id": "JxY5mGjjkM2XCYlstK8OT",
       "type": "arrow",
-      "x": 335.0738494880173,
-      "y": 93.3231026785716,
-      "width": 138.54242913417653,
-      "height": 76.27343749999999,
+      "x": -193.93363191608205,
+      "y": -8.887893238862432,
+      "width": 161.73997563413232,
+      "height": 61.492678846088616,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -293,11 +297,11 @@
         "type": 2
       },
       "seed": 423948683,
-      "version": 168,
-      "versionNonce": 993881221,
+      "version": 990,
+      "versionNonce": 2129502571,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782919605837,
+      "updated": 1782922811184,
       "link": null,
       "locked": false,
       "points": [
@@ -306,20 +310,20 @@
           0
         ],
         [
-          -138.54242913417653,
-          -76.27343749999999
+          -161.73997563413232,
+          -61.492678846088616
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "UpXyrX4kPH6pCpWEGtU-O",
-        "focus": 0.11860560755842614,
-        "gap": 1.0000000000000142
+        "focus": 0.22061594247973024,
+        "gap": 1
       },
       "endBinding": {
         "elementId": "XxcqC2uLZ4y-Q67w6hsdA",
-        "focus": 0.12332005624879207,
-        "gap": 1.9827979695450892
+        "focus": 0.06475277212466149,
+        "gap": 1.9337714037812361
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -328,10 +332,10 @@
     {
       "id": "XxcqC2uLZ4y-Q67w6hsdA",
       "type": "rectangle",
-      "x": -65.1171875,
-      "y": -167.04017857142844,
-      "width": 259.9921875,
-      "height": 183,
+      "x": -661.1326623932573,
+      "y": -218.79629860239532,
+      "width": 303.5252834392617,
+      "height": 162,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -345,8 +349,8 @@
       "index": "aH",
       "roundness": null,
       "seed": 1078137707,
-      "version": 250,
-      "versionNonce": 1132850620,
+      "version": 747,
+      "versionNonce": 1263522405,
       "isDeleted": false,
       "boundElements": [
         {
@@ -362,17 +366,17 @@
           "type": "arrow"
         }
       ],
-      "updated": 1782922014367,
+      "updated": 1782922810852,
       "link": null,
       "locked": false
     },
     {
       "id": "BEnbMyXG3zLygW1e0uyeb",
       "type": "text",
-      "x": -59.99333953857422,
-      "y": -161.94017857142845,
-      "width": 249.74449157714844,
-      "height": 172.8,
+      "x": -653.7303417185483,
+      "y": -213.39629860239535,
+      "width": 288.72064208984375,
+      "height": 151.20000000000002,
       "angle": 0,
       "strokeColor": "#e03131",
       "backgroundColor": "transparent",
@@ -386,14 +390,14 @@
       "index": "aI",
       "roundness": null,
       "seed": 1527554059,
-      "version": 113,
-      "versionNonce": 406695339,
+      "version": 398,
+      "versionNonce": 13778373,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782919591093,
+      "updated": 1782922810852,
       "link": null,
       "locked": false,
-      "text": "Storing session tokens in the\ndatabase without hashing them is\njust like storing passwords in plain\ntext. If an attacker gains access to\nthese session tokens, they'll have\naccess to every single account. So,\nmake sure to hash them in the\ndatabase.",
+      "text": "Storing session tokens in the database\nwithout hashing them is just like storing\npasswords in plain text. If an attacker\ngains access to these session tokens,\nthey'll have access to every single\naccount. So, make sure to hash them in\nthe database.",
       "fontSize": 16,
       "fontFamily": 6,
       "textAlign": "center",
@@ -406,10 +410,10 @@
     {
       "id": "-L6lOlVG0YGGHk6z1Fj4m",
       "type": "rectangle",
-      "x": 281.453125,
-      "y": -299.20424107142844,
-      "width": 262.56250000000006,
-      "height": 313,
+      "x": -256.53261135058506,
+      "y": -325.3487566623443,
+      "width": 306.5259691044415,
+      "height": 270,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -423,8 +427,8 @@
       "index": "aK",
       "roundness": null,
       "seed": 2073064133,
-      "version": 958,
-      "versionNonce": 2096097504,
+      "version": 1455,
+      "versionNonce": 1225146373,
       "isDeleted": false,
       "boundElements": [
         {
@@ -434,19 +438,23 @@
         {
           "id": "UypX2Qg-wNe0hw1dJ4j4q",
           "type": "arrow"
+        },
+        {
+          "id": "rAv37RvKKQpXqWLsQGF9d",
+          "type": "arrow"
         }
       ],
-      "updated": 1782920489727,
+      "updated": 1782922827319,
       "link": null,
       "locked": false
     },
     {
       "id": "DYHVZBjnakbbihvFtS5kr",
       "type": "text",
-      "x": 288.422119140625,
-      "y": -293.9042410714285,
-      "width": 248.62451171875,
-      "height": 302.40000000000003,
+      "x": -251.41394442531742,
+      "y": -319.9487566623443,
+      "width": 296.28863525390625,
+      "height": 259.20000000000005,
       "angle": 0,
       "strokeColor": "#e03131",
       "backgroundColor": "transparent",
@@ -460,14 +468,14 @@
       "index": "aL",
       "roundness": null,
       "seed": 711238091,
-      "version": 559,
-      "versionNonce": 1161159525,
+      "version": 846,
+      "versionNonce": 793945323,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782919595801,
+      "updated": 1782922810852,
       "link": null,
       "locked": false,
-      "text": "In create_session, you used\ntimezone.utc, but then in\nget_current_user, you used\ndatetime.utcnow(). The problem is\nthat the first one has a timezone\nattached when it's recorded, while\nthe second function compares the\nexpiration time against a time that\nhas no timezone information. This\ncan cause issues for you.\nTry to use\ndatetime.now(timezone.utc)\neverywhere consistently.\n",
+      "text": "In create_session, you used timezone.utc,\nbut then in get_current_user, you used\ndatetime.utcnow(). The problem is that\nthe first one has a timezone attached\nwhen it's recorded, while the second\nfunction compares the expiration time\nagainst a time that has no timezone\ninformation. This can cause issues for\nyou.\nTry to use datetime.now(timezone.utc)\neverywhere consistently.\n",
       "fontSize": 16,
       "fontFamily": 6,
       "textAlign": "center",
@@ -480,10 +488,10 @@
     {
       "id": "OsytcM3ZQ5aeRGy92hv4O",
       "type": "arrow",
-      "x": 712.607421875,
-      "y": -75.29994419642844,
-      "width": 0.7734375,
-      "height": 61.27734375,
+      "x": 246.81416773307467,
+      "y": -144.8340785348027,
+      "width": 0.9029418870905649,
+      "height": 49.402624862162874,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -499,11 +507,11 @@
         "type": 2
       },
       "seed": 1468309728,
-      "version": 35,
-      "versionNonce": 674347296,
+      "version": 582,
+      "versionNonce": 2133605387,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782920155680,
+      "updated": 1782922811184,
       "link": null,
       "locked": false,
       "points": [
@@ -512,14 +520,14 @@
           0
         ],
         [
-          -0.7734375,
-          -61.27734375
+          -0.9029418870905649,
+          -49.402624862162874
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "NlQ2U6RWlKKLmNvJtcFYZ",
-        "focus": -0.07242554475175753,
+        "focus": -0.07242554475175661,
         "gap": 1
       },
       "endBinding": null,
@@ -530,9 +538,9 @@
     {
       "id": "gFj1bfUmZsiYVrtiHGkJM",
       "type": "rectangle",
-      "x": 596.099609375,
-      "y": -205.62025669642844,
-      "width": 247.95703125,
+      "x": 108.68109778679593,
+      "y": -263.54851786124993,
+      "width": 289.4749604386252,
       "height": 64,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -547,8 +555,8 @@
       "index": "aN",
       "roundness": null,
       "seed": 1045023968,
-      "version": 204,
-      "versionNonce": 1316137248,
+      "version": 710,
+      "versionNonce": 115854571,
       "isDeleted": false,
       "boundElements": [
         {
@@ -556,15 +564,15 @@
           "id": "DD2mNmNew7Uo77SNkA5hm"
         }
       ],
-      "updated": 1782920211707,
+      "updated": 1782922818529,
       "link": null,
       "locked": false
     },
     {
       "id": "DD2mNmNew7Uo77SNkA5hm",
       "type": "text",
-      "x": 603.9782333374023,
-      "y": -200.62025669642844,
+      "x": 137.31868634351088,
+      "y": -258.54851786124993,
       "width": 232.1997833251953,
       "height": 54,
       "angle": 0,
@@ -580,11 +588,11 @@
       "index": "aO",
       "roundness": null,
       "seed": 850289952,
-      "version": 185,
-      "versionNonce": 402978080,
+      "version": 468,
+      "versionNonce": 1842673547,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782920214546,
+      "updated": 1782922818529,
       "link": null,
       "locked": false,
       "text": "I fixed this bug using field\nconstrains",
@@ -600,10 +608,10 @@
     {
       "id": "UypX2Qg-wNe0hw1dJ4j4q",
       "type": "arrow",
-      "x": 411.287109375,
-      "y": -302.15541294642844,
-      "width": 2.5546875,
-      "height": 57.86328125,
+      "x": -104.95922260223836,
+      "y": -327.72803141745123,
+      "width": 2.982444414935502,
+      "height": 46.65016141283984,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -619,11 +627,11 @@
         "type": 2
       },
       "seed": 629753056,
-      "version": 34,
-      "versionNonce": 2143079712,
+      "version": 581,
+      "versionNonce": 1040089771,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782920491375,
+      "updated": 1782922811184,
       "link": null,
       "locked": false,
       "points": [
@@ -632,15 +640,15 @@
           0
         ],
         [
-          2.5546875,
-          -57.86328125
+          2.982444414935502,
+          -46.65016141283984
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "-L6lOlVG0YGGHk6z1Fj4m",
-        "focus": -0.061415815435684154,
-        "gap": 2.951171875
+        "focus": -0.0646877438420723,
+        "gap": 2.3792747551069624
       },
       "endBinding": null,
       "startArrowhead": null,
@@ -650,9 +658,9 @@
     {
       "id": "08h_ZKChv8k__dVhjUVF-",
       "type": "rectangle",
-      "x": 280.619140625,
-      "y": -419.38197544642844,
-      "width": 278.328125,
+      "x": -257.5062380823722,
+      "y": -422.23767456869166,
+      "width": 324.93139060089356,
       "height": 54,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -667,8 +675,8 @@
       "index": "aQ",
       "roundness": null,
       "seed": 46430432,
-      "version": 234,
-      "versionNonce": 82223392,
+      "version": 725,
+      "versionNonce": 56046091,
       "isDeleted": false,
       "boundElements": [
         {
@@ -676,15 +684,15 @@
           "id": "NXAJuW6clQFjW_wNxUMXb"
         }
       ],
-      "updated": 1782920568425,
+      "updated": 1782922810852,
       "link": null,
       "locked": false
     },
     {
       "id": "NXAJuW6clQFjW_wNxUMXb",
       "type": "text",
-      "x": 293.2309341430664,
-      "y": -413.98197544642846,
+      "x": -221.592811763859,
+      "y": -416.8376745686917,
       "width": 253.1045379638672,
       "height": 43.2,
       "angle": 0,
@@ -700,11 +708,11 @@
       "index": "aR",
       "roundness": null,
       "seed": 2099487008,
-      "version": 175,
-      "versionNonce": 1820940512,
+      "version": 449,
+      "versionNonce": 760920235,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782920603424,
+      "updated": 1782922810852,
       "link": null,
       "locked": false,
       "text": "I changed the datetime.utcnow() to\ndatetime.now(timezone.utc)",
@@ -720,10 +728,10 @@
     {
       "id": "dUnJAfCavx_CdAwDicKmy",
       "type": "arrow",
-      "x": 513.193359375,
-      "y": 154.10728236607156,
-      "width": 131.47265625,
-      "height": 1.00390625,
+      "x": 14.010211490785082,
+      "y": 40.11713607355563,
+      "width": 153.48643986771285,
+      "height": 0.8093628220549409,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -739,11 +747,11 @@
         "type": 2
       },
       "seed": 257469572,
-      "version": 69,
-      "versionNonce": 825839036,
+      "version": 616,
+      "versionNonce": 68089163,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782921849098,
+      "updated": 1782922811184,
       "link": null,
       "locked": false,
       "points": [
@@ -752,15 +760,15 @@
           0
         ],
         [
-          131.47265625,
-          1.00390625
+          153.48643986771285,
+          0.8093628220549409
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "UpXyrX4kPH6pCpWEGtU-O",
-        "focus": 0.0013073259603022269,
-        "gap": 2.837890625
+        "focus": -0.19093438862486578,
+        "gap": 3.313067075612537
       },
       "endBinding": null,
       "startArrowhead": null,
@@ -770,10 +778,10 @@
     {
       "id": "DwhzqhblLkdYpTrrxL45v",
       "type": "rectangle",
-      "x": 647.607421875,
-      "y": 129.98618861607156,
-      "width": 216.40624999999997,
-      "height": 44.58984375,
+      "x": 170.93056671697877,
+      "y": 20.670383442469017,
+      "width": 252.6413158829156,
+      "height": 37,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -787,8 +795,8 @@
       "index": "aT",
       "roundness": null,
       "seed": 523393924,
-      "version": 170,
-      "versionNonce": 69823323,
+      "version": 641,
+      "versionNonce": 1745114251,
       "isDeleted": false,
       "boundElements": [
         {
@@ -800,15 +808,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1782922477549,
+      "updated": 1782922810852,
       "link": null,
       "locked": false
     },
     {
       "id": "jkr-pshWFlMCwPTzjWYVL",
       "type": "text",
-      "x": 654.5806503295898,
-      "y": 138.78111049107156,
+      "x": 196.0213281130264,
+      "y": 25.670383442469017,
       "width": 202.4597930908203,
       "height": 27,
       "angle": 0,
@@ -824,11 +832,11 @@
       "index": "aU",
       "roundness": null,
       "seed": 1682524220,
-      "version": 136,
-      "versionNonce": 1343349052,
+      "version": 410,
+      "versionNonce": 1967098667,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782921892288,
+      "updated": 1782922810852,
       "link": null,
       "locked": false,
       "text": "Clear expired sessions",
@@ -844,10 +852,10 @@
     {
       "id": "yDc51IfR0sOdj9ClcO6Ue",
       "type": "arrow",
-      "x": 45.833984375,
-      "y": -167.92006138392844,
-      "width": 0.359375,
-      "height": 87.76171875,
+      "x": -531.6038245650914,
+      "y": -219.50567204857387,
+      "width": 0.4195487556178382,
+      "height": 70.7546868603438,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -863,11 +871,11 @@
         "type": 2
       },
       "seed": 2105809596,
-      "version": 76,
-      "versionNonce": 223980292,
+      "version": 623,
+      "versionNonce": 548934635,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782922016263,
+      "updated": 1782922811184,
       "link": null,
       "locked": false,
       "points": [
@@ -876,14 +884,14 @@
           0
         ],
         [
-          -0.359375,
-          -87.76171875
+          -0.4195487556178382,
+          -70.7546868603438
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "XxcqC2uLZ4y-Q67w6hsdA",
-        "focus": -0.1431811366282108,
+        "focus": -0.1428591549908753,
         "gap": 1
       },
       "endBinding": null,
@@ -894,10 +902,10 @@
     {
       "id": "fcXttxZdYxf91zIc53yAL",
       "type": "rectangle",
-      "x": -101.931640625,
-      "y": -477.77943638392844,
-      "width": 319.48828125,
-      "height": 213.9375,
+      "x": -704.111328125,
+      "y": -469.31849888392844,
+      "width": 372.98340405681927,
+      "height": 172.4793114330934,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -911,8 +919,8 @@
       "index": "aW",
       "roundness": null,
       "seed": 888352700,
-      "version": 111,
-      "versionNonce": 1247474748,
+      "version": 562,
+      "versionNonce": 380364901,
       "isDeleted": false,
       "boundElements": [
         {
@@ -920,17 +928,17 @@
           "id": "5tVT4V9v2hC8wSyhLESH5"
         }
       ],
-      "updated": 1782922027576,
+      "updated": 1782922810852,
       "link": null,
       "locked": false
     },
     {
       "id": "5tVT4V9v2hC8wSyhLESH5",
       "type": "text",
-      "x": -90.81735229492188,
-      "y": -465.31068638392844,
-      "width": 297.25970458984375,
-      "height": 189,
+      "x": -697.2594576395591,
+      "y": -464.07884316738176,
+      "width": 359.2796630859375,
+      "height": 162,
       "angle": 0,
       "strokeColor": "#2f9e44",
       "backgroundColor": "transparent",
@@ -944,14 +952,14 @@
       "index": "aX",
       "roundness": null,
       "seed": 2112675332,
-      "version": 250,
-      "versionNonce": 1148616708,
+      "version": 504,
+      "versionNonce": 1756429419,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782922104541,
+      "updated": 1782922810852,
       "link": null,
       "locked": false,
-      "text": "Now we store the bcrypt version\nof session inside database and\nreturnt the raw session to the\nuser then in get_current_user we\nagain bcrypt the raw password\nand check it with the one saved\ninside database",
+      "text": "Now we store the bcrypt version of\nsession inside database and returnt the\nraw session to the user then in\nget_current_user we again bcrypt the\nraw password and check it with the one\nsaved inside database",
       "fontSize": 20,
       "fontFamily": 6,
       "textAlign": "center",
@@ -964,10 +972,10 @@
     {
       "id": "6kkcx-0NNKC6g0HHzjDDP",
       "type": "arrow",
-      "x": 864.560546875,
-      "y": 152.79917689732156,
-      "width": 101.91015625,
-      "height": 1.3359375,
+      "x": 424.21032635844324,
+      "y": 39.062523719331296,
+      "width": 118.97399440558459,
+      "height": 1.0770509149524894,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -983,11 +991,11 @@
         "type": 2
       },
       "seed": 551258421,
-      "version": 49,
-      "versionNonce": 483669973,
+      "version": 596,
+      "versionNonce": 335830667,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1782922485663,
+      "updated": 1782922811184,
       "link": null,
       "locked": false,
       "points": [
@@ -996,14 +1004,14 @@
           0
         ],
         [
-          101.91015625,
-          1.3359375
+          118.97399440558459,
+          1.0770509149524894
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "DwhzqhblLkdYpTrrxL45v",
-        "focus": -0.03827102787289296,
+        "focus": -0.06400054231726182,
         "gap": 1
       },
       "endBinding": null,
@@ -1014,10 +1022,10 @@
     {
       "id": "rzD9hx1Q2sT_OMdvqMKf8",
       "type": "rectangle",
-      "x": 974.654296875,
-      "y": 109.01792689732156,
-      "width": 262.79296875,
-      "height": 97,
+      "x": 551.6834880794559,
+      "y": 0.6248617170286366,
+      "width": 306.7950275455442,
+      "height": 78.20271438625794,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -1031,8 +1039,8 @@
       "index": "aa",
       "roundness": null,
       "seed": 1436183541,
-      "version": 80,
-      "versionNonce": 1885972731,
+      "version": 527,
+      "versionNonce": 292098923,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1040,17 +1048,17 @@
           "id": "D2plVF-lCJlCxtaeFJLVh"
         }
       ],
-      "updated": 1782922553092,
+      "updated": 1782922821501,
       "link": null,
       "locked": false
     },
     {
       "id": "D2plVF-lCJlCxtaeFJLVh",
       "type": "text",
-      "x": 990.1625442504883,
-      "y": 114.31792689732156,
-      "width": 231.77647399902344,
-      "height": 86.4,
+      "x": 560.0486837369936,
+      "y": 7.3262189101576,
+      "width": 290.06463623046875,
+      "height": 64.80000000000001,
       "angle": 0,
       "strokeColor": "#2f9e44",
       "backgroundColor": "transparent",
@@ -1064,14 +1072,14 @@
       "index": "aaV",
       "roundness": null,
       "seed": 1627985723,
-      "version": 154,
-      "versionNonce": 1955165621,
+      "version": 449,
+      "versionNonce": 1432972811,
       "isDeleted": false,
-      "boundElements": null,
-      "updated": 1782922556271,
+      "boundElements": [],
+      "updated": 1782922821501,
       "link": null,
       "locked": false,
-      "text": "Inside create_session i created a\npart for deleting the expired\nsession before creating a new\nsession ",
+      "text": "Inside create_session i created a part for\ndeleting the expired session before\ncreating a new session ",
       "fontSize": 16,
       "fontFamily": 6,
       "textAlign": "center",
