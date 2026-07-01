@@ -32,7 +32,7 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
 
     session_record = db.query(UserSession).filter(UserSession.session_token == session_token).first()
     
-    if not session_record or session_record.expires_at < datetime.utcnow():
+    if not session_record or session_record.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Session expired or invalid."
