@@ -1,5 +1,5 @@
 # -- Imports -- #
-from fastapi import FastAPI, Depends, HTTPException, Response, Request
+from fastapi import FastAPI, Depends, HTTPException, Response, Request, WebSocket
 from sqlalchemy.orm import Session
 from database.database import get_db, engine, Base
 from database.models import User, UserSession
@@ -70,3 +70,11 @@ def delete_own_account(
     response.delete_cookie(COOKIE_NAME)
     
     return{"message": "Your account has been successfully deleted. We're sad to see you go!"}
+
+# Webscoket here, under active development.
+@app.websocket("/ws")
+async def websocket_endpoint(websocket:WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        await websocket.send_text(f"Message that was: {data}")

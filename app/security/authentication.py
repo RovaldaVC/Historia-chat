@@ -4,7 +4,7 @@ from fastapi import Request, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from database.database import get_db
 from database.models import User, UserSession
-from hash_session import hash_session, verify_session
+from security.hash_session import hash_session, verify_session
 
 SESSION_EXPIRE_DAYS = 7
 COOKIE_NAME = "historia_session"

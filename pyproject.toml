@@ -22,7 +22,8 @@ dependencies = [
     "uvicorn",
     "sqlalchemy",
     "pyjwt",
-    "pwdlib[argon2]"
+    "pwdlib[argon2]",
+    "websockets",
 ]
 
 [project.optional-dependencies]
