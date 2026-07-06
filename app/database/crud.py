@@ -1,7 +1,7 @@
 from database.models import User, UserSession
 from fastapi import HTTPException, Depends, Response, Request
 from fastapi.security import OAuth2PasswordRequestForm
-from database.schemas import UserCreate
+from database.schemas import UserCreate, UserUpdate
 from sqlalchemy.orm import Session
 from database.database import get_db
 from security.hash_password import get_password_hash, verify_password
@@ -30,15 +30,18 @@ def crud_sign_up(user:UserCreate, db:Session):
     db.refresh(new_user)
     return new_user
 
-def crud_update_user(user_id:int, user:UserCreate, db:Session):
+def crud_update_user(user_id:int, user:UserUpdate, db:Session):
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
     
-    update_data = user.model_dump()
+    update_data = user.model_dump(exclude_unset=True)
     
-    if "password" in update_data and update_data["password"]:
-        update_data["password"] = get_password_hash(update_data["password"])
+    if "password" in update_data:
+        if update_data["password"]: 
+            update_data["password"] = get_password_hash(update_data["password"])
+        else:
+            del update_data["password"]
     
     for field, value in update_data.items():
         setattr(db_user, field, value)
@@ -63,10 +66,13 @@ def crud_get_all_users(db:Session):
 def crud_login(form_data_username: str, form_data_password: str, db: Session):
     user = db.query(User).filter(User.username == form_data_username).first()
     
-    if not user or not verify_password(form_data_password, user.password):
+    if not user or not verify_password(form_data_password, user.password): # type: ignore
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-        
-    session_token = create_session(db, user.id)
+    
+    if not user.active: # type: ignore
+        raise HTTPException(status_code=403, detail="User account is not active.")
+    
+    session_token = create_session(db, user.id) # type: ignore
     
     return {"session_token": session_token, "user_name": user.name}
 

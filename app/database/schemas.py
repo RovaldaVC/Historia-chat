@@ -8,11 +8,19 @@ class UserCreate(BaseModel):
     username: str
     password: str = Field(
         min_length=8,
-        max_length=128,
-        description= "Password must be between 8 and 128 characters"
+        max_length=255,
+        description= "Password must be between 8 and 255 characters"
     )
     role: str  = "user"
-    active: bool
+class UserUpdate(BaseModel):
+    name : str
+    family: Optional[str] = None
+    username: str
+    password: str = Field(
+        min_length=8,
+        max_length=255,
+        description= "Password must be between 8 and 255 characters"
+    )
     
 class UserResponse(UserCreate):
     id:int

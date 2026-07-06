@@ -11,13 +11,11 @@ COOKIE_NAME = "historia_session"
 
 def create_session(db: Session, user_id: int) -> str:
     
-    # --- DELETE this user's expired sessions before creating a new one ---
+    #Delete any existing sessions for the user
     db.query(UserSession).filter(
-        UserSession.user_id == user_id,
-        UserSession.expires_at < datetime.now(timezone.utc)
+        UserSession.user_id == user_id
     ).delete()
     
-    # --- Continue with normal creation --- #
     raw_token = secrets.token_urlsafe(32)
     hashed_token = hash_session(raw_token)
     expires = datetime.now(timezone.utc) + timedelta(days=SESSION_EXPIRE_DAYS)

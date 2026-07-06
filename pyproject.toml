@@ -1,10 +1,13 @@
+[tool.setuptools.packages.find]
+include = ["app", "excalidraw"]
+
 [tool.uvicorn]
 app = "main:app"
 port = 8000
 # this way you can import your app anywhere.
 
 [project.scripts]
-we-chat = "main:app"   # if your main.py has `app = FastAPI()`
+we-chat = "main:app"
 
 [build-system]
 requires = ["setuptools>=61.0"]

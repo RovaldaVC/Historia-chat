@@ -47,7 +47,7 @@ def sign_up(user:UserCreate, db:Session = Depends(get_db)):
     
 @app.put("/users/me", response_model=UserResponse)
 def update_user(user:UserCreate, db:Session = Depends(get_db), current_user:User = Depends(get_current_user)):
-    return crud_update_user(current_user.id, user, db)
+    return crud_update_user(current_user.id, user, db) # type: ignore
     
 @app.delete("/users/{user_id}")
 def delete_user(user_id:int, db:Session = Depends(get_db), current_user: User = Depends(get_current_admin_user)):
@@ -66,7 +66,7 @@ def delete_own_account(
     current_user:User = Depends(get_current_user)
 ):
     db.query(UserSession).filter(UserSession.user_id == current_user.id).delete()
-    crud_delete_user(current_user.id, db)
+    crud_delete_user(current_user.id, db) # type: ignore
     response.delete_cookie(COOKIE_NAME)
     
     return{"message": "Your account has been successfully deleted. We're sad to see you go!"}
