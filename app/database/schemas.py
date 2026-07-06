@@ -5,7 +5,7 @@ from typing import Optional
 class UserCreate(BaseModel):
     name: str
     family: Optional[str] = None
-    username: str
+    username: str = Field(..., min_length=3, max_length=32, pattern="^[a-zA-Z0-9_-]+$")
     password: str = Field(
         min_length=8,
         max_length=255,
@@ -16,7 +16,7 @@ class UserCreate(BaseModel):
 class UserUpdate(BaseModel):
     name: Optional[str] = Field(default=None, min_length=1)
     family: Optional[str] = None
-    username: Optional[str] = Field(default=None, min_length=1)
+    username: Optional[str] = Field(default=None, min_length=3, max_length=32, pattern="^[a-zA-Z0-9_-]+$")
     password: Optional[str] = Field(
         default=None,
         min_length=8,

@@ -1,26 +1,26 @@
 try:
     from app.database.models import User, UserSession
-    from app.database.schemas import UserCreate, UserUpdate
+    from app.database.schemas import UserCreate, UserUpdate, UserResponse
     from app.database.database import get_db
     from app.security.hash_password import get_password_hash, verify_password
     from app.security.authentication import create_session, COOKIE_NAME
 except ImportError:  # pragma: no cover - support running module directly from app dir
     from database.models import User, UserSession
-    from database.schemas import UserCreate, UserUpdate
+    from database.schemas import UserCreate, UserUpdate, UserResponse
     from database.database import get_db
     from security.hash_password import get_password_hash, verify_password
     from security.authentication import create_session, COOKIE_NAME
 
-from fastapi import HTTPException, Depends, Response, Request
+from fastapi import HTTPException, Depends, Response, Request, status
 from sqlalchemy.orm import Session
 
-def crud_get_user(user_id:int, db:Session):
+def crud_get_user(user_id: int, db: Session) -> User:
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
     return user
 
-def crud_sign_up(user:UserCreate, db:Session):
+def crud_sign_up(user: UserCreate, db: Session) -> User:
     if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(status_code=422, detail="User already exists.")
 
@@ -38,7 +38,7 @@ def crud_sign_up(user:UserCreate, db:Session):
     db.refresh(new_user)
     return new_user
 
-def crud_update_user(user_id:int, user:UserUpdate, db:Session):
+def crud_update_user(user_id: int, user: UserUpdate, db: Session) -> User:
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
@@ -60,21 +60,27 @@ def crud_update_user(user_id:int, user:UserUpdate, db:Session):
     db.refresh(db_user)
     return db_user
 
-def crud_delete_user(user_id:int, db:Session):
+def crud_delete_user(user_id: int, db: Session) -> dict:
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
 
-    db.query(UserSession).filter(UserSession.user_id == user_id).delete()
-    db.delete(db_user)
-    db.commit()
-    return {"message":"User deleted!"}
+    try:
+        # Delete all sessions for the user (cascade delete handles this, but explicit delete ensures cleanup)
+        db.query(UserSession).filter(UserSession.user_id == user_id).delete()
+        db.delete(db_user)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to delete user: {str(e)}")
+    
+    return {"message": "User deleted!"}
 
-def crud_get_all_users(db:Session):
+def crud_get_all_users(db: Session) -> list[User]:
     all_users = db.query(User).all()
     return all_users
 
-def crud_login(form_data_username: str, form_data_password: str, db: Session):
+def crud_login(form_data_username: str, form_data_password: str, db: Session) -> dict:
     user = db.query(User).filter(User.username == form_data_username).first()
     
     if not user or not verify_password(form_data_password, user.password): # type: ignore
@@ -87,7 +93,7 @@ def crud_login(form_data_username: str, form_data_password: str, db: Session):
     
     return {"session_token": session_token, "user_name": user.name}
 
-def crud_logout(response: Response, request: Request, db: Session = Depends(get_db)):
+def crud_logout(response: Response, request: Request, db: Session = Depends(get_db)) -> dict:
     session_token = request.cookies.get(COOKIE_NAME)
     
     if session_token:

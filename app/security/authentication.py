@@ -35,7 +35,7 @@ def create_session(db: Session, user_id: int) -> str:
     db.commit()
     return raw_token
 
-def get_current_user(request: Request, db: Session = Depends(get_db)):
+def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     raw_token = request.cookies.get(COOKIE_NAME)
     
     if not raw_token:
@@ -51,11 +51,17 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Session expired or invalid."
         )
+    
+    if not session_record.user.active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is not active."
+        )
         
     return session_record.user
 
-def get_current_admin_user(current_user: User = Depends(get_current_user)):
-    if current_user.role != "admin": # type: ignore
+def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to perform this action."
