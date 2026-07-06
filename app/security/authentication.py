@@ -2,22 +2,14 @@ import secrets
 from datetime import datetime, timezone, timedelta
 from fastapi import Request, HTTPException, Depends, status
 from sqlalchemy.orm import Session
-
-try:
-    from app.database.database import get_db
-    from app.database.models import User, UserSession
-    from app.security.hash_session import hash_session, verify_session
-except ImportError:  # pragma: no cover - support running module directly from app dir
-    from database.database import get_db
-    from database.models import User, UserSession
-    from security.hash_session import hash_session, verify_session
+from ..database.database import get_db
+from ..database.models import User, UserSession
+from ..security.hash_session import hash_session, verify_session
 
 SESSION_EXPIRE_DAYS = 7
 COOKIE_NAME = "historia_session"
 
 def create_session(db: Session, user_id: int) -> str:
-    
-    #Delete any existing sessions for the user
     db.query(UserSession).filter(
         UserSession.user_id == user_id
     ).delete()
@@ -61,7 +53,7 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     return session_record.user
 
 def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
-    if current_user.role != "admin":
+    if current_user.role != "admin": # type: ignore
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to perform this action."

@@ -4,20 +4,11 @@ from starlette.websockets import WebSocketDisconnect
 from sqlalchemy.orm import Session
 import logging
 import os
-
-try:
-    from app.database.database import get_db, engine, Base
-    from app.database.models import User, UserSession
-    from app.database.schemas import UserResponse, UserCreate, UserUpdate
-    from app.database.crud import crud_get_user, crud_sign_up, crud_update_user, crud_delete_user, crud_get_all_users, crud_login, crud_logout
-    from app.security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user
-except ImportError:  # pragma: no cover - support running module directly from app dir
-    from database.database import get_db, engine, Base
-    from database.models import User, UserSession
-    from database.schemas import UserResponse, UserCreate, UserUpdate
-    from database.crud import crud_get_user, crud_sign_up, crud_update_user, crud_delete_user, crud_get_all_users, crud_login, crud_logout
-    from security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user
-
+from .database.database import get_db, engine, Base
+from .database.models import User, UserSession
+from .database.schemas import UserResponse, UserCreate, UserUpdate
+from .database.crud import crud_get_user, crud_sign_up, crud_update_user, crud_delete_user, crud_get_all_users, crud_login, crud_logout
+from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user
 from fastapi.security import OAuth2PasswordRequestForm
 
 logger = logging.getLogger(__name__)

@@ -29,9 +29,9 @@ else:
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-def get_db() -> Session:
+def get_db() -> Session: # type: ignore
     db = SessionLocal()
     try:
-        yield db
+        yield db # type: ignore
     finally:
         db.close()
