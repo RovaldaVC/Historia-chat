@@ -1,13 +1,21 @@
 # -- Imports -- #
-from fastapi import FastAPI, Depends, HTTPException, Response, Request, WebSocket
+from fastapi import FastAPI, Depends, Response, Request, WebSocket
 from sqlalchemy.orm import Session
-from database.database import get_db, engine, Base
-from database.models import User, UserSession
-from database.schemas import UserResponse, UserCreate
-from database.crud import crud_get_user, crud_sign_up, crud_update_user, crud_delete_user, crud_get_all_users, crud_login, crud_logout
+
+try:
+    from app.database.database import get_db, engine, Base
+    from app.database.models import User, UserSession
+    from app.database.schemas import UserResponse, UserCreate, UserUpdate
+    from app.database.crud import crud_get_user, crud_sign_up, crud_update_user, crud_delete_user, crud_get_all_users, crud_login, crud_logout
+    from app.security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user
+except ImportError:  # pragma: no cover - support running module directly from app dir
+    from database.database import get_db, engine, Base
+    from database.models import User, UserSession
+    from database.schemas import UserResponse, UserCreate, UserUpdate
+    from database.crud import crud_get_user, crud_sign_up, crud_update_user, crud_delete_user, crud_get_all_users, crud_login, crud_logout
+    from security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user
+
 from fastapi.security import OAuth2PasswordRequestForm
-from security.authentication import create_session, COOKIE_NAME, get_current_admin_user, get_current_user
-from security.hash_password import verify_password
 
 # -- Main Engine -- #
 Base.metadata.create_all(bind=engine)
@@ -46,7 +54,7 @@ def sign_up(user:UserCreate, db:Session = Depends(get_db)):
     return crud_sign_up(user, db)
     
 @app.put("/users/me", response_model=UserResponse)
-def update_user(user:UserCreate, db:Session = Depends(get_db), current_user:User = Depends(get_current_user)):
+def update_user(user:UserUpdate, db:Session = Depends(get_db), current_user:User = Depends(get_current_user)):
     return crud_update_user(current_user.id, user, db) # type: ignore
     
 @app.delete("/users/{user_id}")

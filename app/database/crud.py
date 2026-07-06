@@ -1,11 +1,18 @@
-from database.models import User, UserSession
+try:
+    from app.database.models import User, UserSession
+    from app.database.schemas import UserCreate, UserUpdate
+    from app.database.database import get_db
+    from app.security.hash_password import get_password_hash, verify_password
+    from app.security.authentication import create_session, COOKIE_NAME
+except ImportError:  # pragma: no cover - support running module directly from app dir
+    from database.models import User, UserSession
+    from database.schemas import UserCreate, UserUpdate
+    from database.database import get_db
+    from security.hash_password import get_password_hash, verify_password
+    from security.authentication import create_session, COOKIE_NAME
+
 from fastapi import HTTPException, Depends, Response, Request
-from fastapi.security import OAuth2PasswordRequestForm
-from database.schemas import UserCreate, UserUpdate
 from sqlalchemy.orm import Session
-from database.database import get_db
-from security.hash_password import get_password_hash, verify_password
-from security.authentication import create_session, COOKIE_NAME
 
 def crud_get_user(user_id:int, db:Session):
     user = db.query(User).filter(User.id == user_id).first()
@@ -16,13 +23,14 @@ def crud_get_user(user_id:int, db:Session):
 def crud_sign_up(user:UserCreate, db:Session):
     if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(status_code=422, detail="User already exists.")
-    
+
     user_data = {
         "name": user.name,
         "family": user.family,
-        "username":user.username,
-        "password":get_password_hash(user.password),
-        "role":"user"
+        "username": user.username,
+        "password": get_password_hash(user.password),
+        "role": "user",
+        "active": False,
     }
     new_user = User(**user_data)
     db.add(new_user)
@@ -34,18 +42,20 @@ def crud_update_user(user_id:int, user:UserUpdate, db:Session):
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
-    
+
     update_data = user.model_dump(exclude_unset=True)
-    
-    if "password" in update_data:
-        if update_data["password"]: 
-            update_data["password"] = get_password_hash(update_data["password"])
-        else:
-            del update_data["password"]
-    
+    allowed_fields = {"name", "family", "password"}
+
+    for field in list(update_data.keys()):
+        if field not in allowed_fields:
+            update_data.pop(field)
+
+    if update_data.get("password"):
+        update_data["password"] = get_password_hash(update_data["password"])
+
     for field, value in update_data.items():
         setattr(db_user, field, value)
-    
+
     db.commit()
     db.refresh(db_user)
     return db_user
@@ -54,7 +64,8 @@ def crud_delete_user(user_id:int, db:Session):
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
-    
+
+    db.query(UserSession).filter(UserSession.user_id == user_id).delete()
     db.delete(db_user)
     db.commit()
     return {"message":"User deleted!"}

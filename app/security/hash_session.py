@@ -1,7 +1,11 @@
 import bcrypt
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
-from database.models import UserSession
+
+try:
+    from app.database.models import UserSession
+except ImportError:
+    from database.models import UserSession
 
 def hash_session(token: str) -> str:
     return bcrypt.hashpw(token.encode(), bcrypt.gensalt()).decode()

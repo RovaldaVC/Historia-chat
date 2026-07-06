@@ -1,6 +1,11 @@
-from database.database import Base
-from sqlalchemy import  Column, ForeignKey, Integer, String, Boolean, DateTime
+try:
+    from app.database.database import Base
+except ImportError:  # pragma: no cover - support running module directly from app dir
+    from database.database import Base
+
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
+
 
 class User(Base):
     __tablename__ = "users"
@@ -9,9 +14,10 @@ class User(Base):
     family = Column(String(255), nullable=True, default=None)
     username = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
-    role = Column(String(255), nullable=False)
+    role = Column(String(255), nullable=False, default="user")
     active = Column(Boolean, default=False)
-    
+
+
 class UserSession(Base):
     __tablename__ = "user_sessions"
     id = Column(Integer, primary_key=True, index=True)
