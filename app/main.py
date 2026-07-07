@@ -10,6 +10,8 @@ from .database.schemas import UserResponse, UserCreate, UserUpdate
 from .database.crud import crud_get_user, crud_sign_up, crud_update_user, crud_delete_user, crud_get_all_users, crud_login, crud_logout
 from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user
 from fastapi.security import OAuth2PasswordRequestForm
+from .security.hash_session import verify_session
+from websocket.manager import manager
 
 logger = logging.getLogger(__name__)
 
@@ -77,30 +79,27 @@ def delete_own_account(
     
     return {"message": "Your account has been successfully deleted. We're sad to see you go!"}
 
-# WebSocket endpoint with authentication
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)) -> None:
-    # Extract token from query parameters: ws://localhost/ws?token=<token>
     token = websocket.query_params.get("token")
     
     if not token:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Unauthorized")
         return
     
-    try:
-        from app.security.hash_session import verify_session
-    except ImportError:
-        from security.hash_session import verify_session
-    
     session_record = verify_session(db, token)
     if not session_record or not session_record.user.active:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Invalid or expired session")
         return
     
-    await websocket.accept()
+    user_id = session_record.user_id
+    
+    await manager.connect(websocket)
     try:
         while True:
             data = await websocket.receive_text()
-            await websocket.send_text(f"Message that was: {data}")
+            await manager.send_personal_message(f"You wrote: {data}", websocket)
+            await manager.broadcast(f"Client #{user_id} says: {data}")
     except WebSocketDisconnect:
-        logger.info(f"WebSocket disconnected for user {session_record.user.id}")
+        manager.disconnect(websocket)
+        await manager.broadcast(f"Client #{user_id} left the chat")
