@@ -1,16 +1,10 @@
-try:
-    from app.database.models import User, UserSession
-    from app.database.schemas import UserCreate, UserUpdate, UserResponse
-    from app.database.database import get_db
-    from app.security.hash_password import get_password_hash, verify_password
-    from app.security.authentication import create_session, COOKIE_NAME
-except ImportError:  # pragma: no cover - support running module directly from app dir
-    from database.models import User, UserSession
-    from database.schemas import UserCreate, UserUpdate, UserResponse
-    from database.database import get_db
-    from security.hash_password import get_password_hash, verify_password
-    from security.authentication import create_session, COOKIE_NAME
 
+from ..database.models import User, UserSession
+from ..database.schemas import UserCreate, UserUpdate, UserResponse
+from ..database.database import get_db
+from ..security.hash_password import get_password_hash, verify_password
+from ..security.authentication import create_session, COOKIE_NAME
+from ..security.hash_session import hash_session
 from fastapi import HTTPException, Depends, Response, Request, status
 from sqlalchemy.orm import Session
 
@@ -94,10 +88,11 @@ def crud_login(form_data_username: str, form_data_password: str, db: Session) ->
     return {"session_token": session_token, "user_name": user.name}
 
 def crud_logout(response: Response, request: Request, db: Session = Depends(get_db)) -> dict:
-    session_token = request.cookies.get(COOKIE_NAME)
+    raw_session_token = request.cookies.get(COOKIE_NAME)
     
-    if session_token:
-        db.query(UserSession).filter(UserSession.session_token == session_token).delete()
+    if raw_session_token:
+        hashed_session_token = hash_session(raw_session_token)
+        db.query(UserSession).filter(UserSession.session_token == hashed_session_token).delete()
         db.commit()
     
     response.delete_cookie(COOKIE_NAME)
