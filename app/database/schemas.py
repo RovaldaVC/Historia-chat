@@ -35,3 +35,14 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        
+        
+        
+class ChatCreate(BaseModel):
+    name: str
+    is_group: bool = False
+    
+    
+    
+class MessageCreate(BaseModel):
+    content: str = Field(..., min_length=1, max_length=1000)

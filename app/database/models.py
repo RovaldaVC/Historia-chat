@@ -25,3 +25,32 @@ class UserSession(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     expires_at = Column(DateTime, nullable=False)
     user = relationship("User")
+
+
+    
+class Chats(Base):
+    __tablename__ = "chats"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255), nullable=False)
+    is_group = Column(Boolean, default=False)
+    created_at = Column(DateTime, nullable=False)
+    
+
+class ChatParticipants(Base):
+    __tablename__ = "chat_participants"
+    id = Column(Integer, primary_key=True, index=True)
+    chat_id = Column(Integer, ForeignKey("chats.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    joined_at = Column(DateTime, nullable=False)
+    user = relationship("User"),
+    chat = relationship("Chats")
+    
+class Messages(Base):
+    __tablename__ = "messages"
+    id = Column(Integer, primary_key=True, index=True)
+    chat_id = Column(Integer, ForeignKey("chats.id", ondelete="CASCADE"), nullable=False)
+    sender_id = Column(Integer, ForeignKey("chat_participants.id", ondelete="CASCADE"), nullable=False)
+    content = Column(String(1000), nullable=False)
+    created_at = Column(DateTime, nullable=False)
+    chat = relationship("Chats")
+    participant = relationship("ChatParticipants")
