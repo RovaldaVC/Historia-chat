@@ -1,5 +1,5 @@
 from ..database.database import Base
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
 
 
@@ -24,7 +24,7 @@ class UserSession(Base):
 
 
     
-class Chats(Base):
+class Chat(Base):
     __tablename__ = "chats"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
@@ -39,18 +39,17 @@ class ChatParticipants(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     joined_at = Column(DateTime, nullable=False)
     user = relationship("User")
-    chat = relationship("Chats")
-    
+    chat = relationship("Chat")
+
+
 class Messages(Base):
     __tablename__ = "messages"
+
     id = Column(Integer, primary_key=True, index=True)
     chat_id = Column(Integer, ForeignKey("chats.id", ondelete="CASCADE"), nullable=False)
     sender_id = Column(Integer, ForeignKey("chat_participants.id", ondelete="SET NULL"), nullable=False)
     content = Column(String(1000), nullable=False)
     created_at = Column(DateTime, nullable=False)
-    chat = relationship("Chats")
+
+    chat = relationship("Chat")
     participant = relationship("ChatParticipants")
-    
-    __table_args__ = (
-        UniqueConstraint("chat_id", "user_id", name="uq_chat_participant"),
-    )

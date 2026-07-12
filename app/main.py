@@ -6,9 +6,20 @@ import logging
 import os
 from .database.database import get_db, engine, Base
 from .database.models import User, UserSession
-from .database.schemas import UserResponse, UserCreate, UserUpdate
-from .database.crud import crud_get_user, crud_sign_up, crud_update_user, crud_delete_user, crud_get_all_users, crud_login, crud_logout
-from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user
+from .database.schemas import UserResponse, UserCreate, UserUpdate, MessageCreate, ChatCreate
+from .database.crud import (
+    crud_get_user,
+    crud_sign_up,
+    crud_update_user,
+    crud_delete_user,
+    crud_get_all_users,
+    crud_login,
+    crud_logout,
+    crud_save_message,
+    crud_create_chat,
+    crud_create_group_chat,
+)
+from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user, get_current_chat_participant_id
 from fastapi.security import OAuth2PasswordRequestForm
 from .security.hash_session import verify_session
 from websocket.manager import manager
@@ -78,6 +89,33 @@ def delete_own_account(
     response.delete_cookie(COOKIE_NAME)
     
     return {"message": "Your account has been successfully deleted. We're sad to see you go!"}
+
+@app.post("/chats/private")
+def create_private_chat(
+    chat: ChatCreate,
+    other_user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return crud_create_chat(current_user.id, other_user_id, chat, db) # type: ignore
+
+@app.post("/chats/group")
+def create_group_chat(
+    chat: ChatCreate,
+    participant_ids: list[int],
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return crud_create_group_chat(current_user.id, participant_ids, chat, db) # type: ignore
+
+@app.post("/chats/{chat_id}/messages")
+def send_message(
+    chat_id: int,
+    message: MessageCreate,
+    db: Session = Depends(get_db),
+    sender_id: int = Depends(get_current_chat_participant_id),
+) -> dict:
+    return crud_save_message(chat_id, sender_id, message, db)
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)) -> None:

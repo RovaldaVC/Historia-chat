@@ -1,6 +1,6 @@
-
-from ..database.models import User, UserSession
-from ..database.schemas import UserCreate, UserUpdate, UserResponse
+from datetime import datetime, timezone
+from ..database.models import User, UserSession, Chat, ChatParticipants, Messages
+from ..database.schemas import UserCreate, UserUpdate, UserResponse, ChatCreate, MessageCreate
 from ..database.database import get_db
 from ..security.hash_password import get_password_hash, verify_password
 from ..security.authentication import create_session, COOKIE_NAME
@@ -97,3 +97,84 @@ def crud_logout(response: Response, request: Request, db: Session = Depends(get_
     
     response.delete_cookie(COOKIE_NAME)
     return {"message": "Successfully logged out."}
+
+
+def crud_create_chat(current_user_id: int, other_user_id: int, chat: ChatCreate, db: Session):
+    if current_user_id == other_user_id:
+        raise HTTPException(status_code=400, detail="You cannot create a private chat with yourself.")
+
+    existing_chat = (
+        db.query(Chat)
+        .join(ChatParticipants, Chat.id == ChatParticipants.chat_id)
+        .filter(
+            Chat.is_group.is_(False),
+            ChatParticipants.user_id.in_([current_user_id, other_user_id]),
+        )
+        .group_by(Chat.id)
+        .having(db.query(ChatParticipants).filter(ChatParticipants.chat_id == Chat.id).count() == 2) # type: ignore
+        .first()
+    )
+
+    if existing_chat:
+        return existing_chat
+
+    new_chat = Chat(
+        name=chat.name,
+        is_group=False,
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(new_chat)
+    db.flush()
+
+    for user_id in [current_user_id, other_user_id]:
+        participant = ChatParticipants(
+            chat_id=new_chat.id,
+            user_id=user_id,
+            joined_at=datetime.now(timezone.utc),
+        )
+        db.add(participant)
+
+    db.commit()
+    db.refresh(new_chat)
+    return new_chat
+
+
+def crud_create_group_chat(current_user_id: int, participant_ids: list[int], group_chat: ChatCreate, db: Session):
+    if not participant_ids:
+        raise HTTPException(status_code=400, detail="A group chat needs at least one participant.")
+
+    participant_ids = list(dict.fromkeys([current_user_id] + participant_ids))
+
+    new_chat = Chat(
+        name=group_chat.name,
+        is_group=True,
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(new_chat)
+    db.flush()
+
+    for user_id in participant_ids:
+        participant = ChatParticipants(
+            chat_id=new_chat.id,
+            user_id=user_id,
+            joined_at=datetime.now(timezone.utc),
+        )
+        db.add(participant)
+
+    db.commit()
+    db.refresh(new_chat)
+    return new_chat
+
+
+
+def crud_save_message(chat_id: int, sender_id: int, message: MessageCreate, db: Session):
+    new_message = Messages(
+        chat_id=chat_id,
+        sender_id=sender_id,
+        content=message.content,
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(new_message)
+    db.commit()
+    db.refresh(new_message)
+    return new_message
