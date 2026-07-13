@@ -4,8 +4,9 @@ from starlette.websockets import WebSocketDisconnect
 from sqlalchemy.orm import Session
 import logging
 import os
+import json
 from .database.database import get_db, engine, Base
-from .database.models import User, UserSession
+from .database.models import User, ChatParticipants
 from .database.schemas import UserResponse, UserCreate, UserUpdate, MessageCreate, ChatCreate
 from .database.crud import (
     crud_get_user,
@@ -22,7 +23,7 @@ from .database.crud import (
 from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user, get_current_chat_participant_id
 from fastapi.security import OAuth2PasswordRequestForm
 from .security.hash_session import verify_session
-from websocket.manager import manager
+from .websocket.manager import manager
 
 logger = logging.getLogger(__name__)
 
@@ -90,16 +91,16 @@ def delete_own_account(
     
     return {"message": "Your account has been successfully deleted. We're sad to see you go!"}
 
-@app.post("/chats/private")
+@app.post("/chats/new/private")
 def create_private_chat(
-    chat: ChatCreate,
-    other_user_id: int,
+    chat: ChatCreate, # later we have to use contact name instead.
+    other_user_id: int, # How to get other user id? we have to set it.
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     return crud_create_chat(current_user.id, other_user_id, chat, db) # type: ignore
 
-@app.post("/chats/group")
+@app.post("/chats/new/group")
 def create_group_chat(
     chat: ChatCreate,
     participant_ids: list[int],
@@ -120,24 +121,67 @@ def send_message(
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)) -> None:
     token = websocket.query_params.get("token")
-    
+    chat_id_query = websocket.query_params.get("chat_id")
+
     if not token:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Unauthorized")
         return
-    
+
     session_record = verify_session(db, token)
     if not session_record or not session_record.user.active:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Invalid or expired session")
         return
-    
+
     user_id = session_record.user_id
-    
+
     await manager.connect(websocket)
     try:
         while True:
-            data = await websocket.receive_text()
-            await manager.send_personal_message(f"You wrote: {data}", websocket)
-            await manager.broadcast(f"Client #{user_id} says: {data}")
+            raw_data = await websocket.receive_text()
+            try:
+                payload = json.loads(raw_data)
+            except json.JSONDecodeError:
+                payload = {"content": raw_data}
+
+            if isinstance(payload, str):
+                payload = {"content": payload}
+
+            content = payload.get("content")
+            if not content:
+                continue
+
+            chat_id = payload.get("chat_id") or chat_id_query
+            if chat_id is None:
+                await websocket.send_text("Missing chat_id")
+                continue
+
+            try:
+                chat_id = int(chat_id)
+            except (TypeError, ValueError):
+                await websocket.send_text("Invalid chat_id")
+                continue
+
+            participant = (
+                db.query(ChatParticipants)
+                .filter(
+                    ChatParticipants.chat_id == chat_id,
+                    ChatParticipants.user_id == user_id,
+                )
+                .first()
+            )
+            if not participant:
+                await websocket.send_text("You are not a participant in this chat")
+                continue
+
+            saved_message = crud_save_message(
+                chat_id,
+                participant.id,  # type: ignore[arg-type]
+                MessageCreate(content=content),
+                db,
+            )
+            outgoing_message = f"{session_record.user.name}: {saved_message.content}"
+            await manager.send_personal_message(outgoing_message, websocket)
+            await manager.broadcast(outgoing_message, sender=websocket)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         await manager.broadcast(f"Client #{user_id} left the chat")

@@ -60,7 +60,6 @@ def crud_delete_user(user_id: int, db: Session) -> dict:
         raise HTTPException(status_code=404, detail="User not found.")
 
     try:
-        # Delete all sessions for the user (cascade delete handles this, but explicit delete ensures cleanup)
         db.query(UserSession).filter(UserSession.user_id == user_id).delete()
         db.delete(db_user)
         db.commit()
