@@ -76,11 +76,11 @@ def get_current_chat_participant_id(
             detail="You are not a participant in this chat."
         )
 
-    return participant.id # type: ignore
+    return participant.id
 
 
 def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
-    if current_user.role != "admin": # type: ignore
+    if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to perform this action."
