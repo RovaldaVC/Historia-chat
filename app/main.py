@@ -69,7 +69,7 @@ def sign_up(user: UserCreate, db: Session = Depends(get_db)) -> User:
     
 @app.put("/users/me", response_model=UserResponse)
 def update_user(user: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> UserResponse:
-    return crud_update_user(current_user.id, user, db) # type: ignore
+    return crud_update_user(current_user.id, user, db)
     
 @app.delete("/users/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_admin_user)) -> dict:
@@ -86,7 +86,7 @@ def delete_own_account(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ) -> dict:
-    crud_delete_user(current_user.id, db) # type: ignore
+    crud_delete_user(current_user.id, db)
     response.delete_cookie(COOKIE_NAME)
     
     return {"message": "Your account has been successfully deleted. We're sad to see you go!"}
@@ -98,7 +98,7 @@ def create_private_chat(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return crud_create_chat(current_user.id, other_user_id, chat, db) # type: ignore
+    return crud_create_chat(current_user.id, other_user_id, chat, db)
 
 @app.post("/chats/new/group")
 def create_group_chat(
