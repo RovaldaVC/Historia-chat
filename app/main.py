@@ -6,7 +6,7 @@ import logging
 import os
 import json
 from .database.database import get_db, engine, Base
-from .database.models import User, ChatParticipants
+from .database.models import User, ChatParticipants, MessageStatusEnum
 from .database.schemas import UserResponse, UserCreate, UserUpdate, MessageCreate, ChatCreate
 from .database.crud import (
     crud_get_user,
@@ -19,6 +19,8 @@ from .database.crud import (
     crud_save_message,
     crud_create_chat,
     crud_create_group_chat,
+    crud_get_chat_history, 
+    crud_update_message_status
 )
 from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user, get_current_chat_participant_id
 from fastapi.security import OAuth2PasswordRequestForm
@@ -117,6 +119,26 @@ def send_message(
     sender_id: int = Depends(get_current_chat_participant_id),
 ) -> dict:
     return crud_save_message(chat_id, sender_id, message, db)
+
+@app.get("/chats/{chat_id}/messages")
+def get_chat_history(
+    chat_id: int,
+    limit: int = 50,
+    offset: int = 0,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return crud_get_chat_history(chat_id, current_user.id, db, limit, offset)
+
+@app.put("/messages/{message_id}/status")
+def update_message_status(
+    message_id: int,
+    new_status: MessageStatusEnum,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return crud_update_message_status(message_id, current_user.id, new_status, db)
+
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> None:

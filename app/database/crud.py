@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from ..database.models import User, UserSession, Chat, ChatParticipants, Messages
+from ..database.models import User, UserSession, Chat, ChatParticipants, Messages, MessageStatus, MessageStatusEnum
 from ..database.schemas import UserCreate, UserUpdate, UserResponse, ChatCreate, MessageCreate
 from ..database.database import get_db
 from ..security.hash_password import get_password_hash, verify_password
@@ -167,6 +167,15 @@ def crud_create_group_chat(current_user_id: int, participant_ids: list[int], gro
 
 
 def crud_save_message(chat_id: int, sender_id: int, message: MessageCreate, db: Session):
+    participants = db.query(ChatParticipants).filter(
+        ChatParticipants.chat_id == chat_id
+    ).all()
+    
+    participant_ids = [p.user_id for p in participants]
+    
+    if sender_id not in participant_ids:
+        raise HTTPException(status_code=403, detail="You are not a participant of this chat room.")
+    
     new_message = Messages(
         chat_id=chat_id,
         sender_id=sender_id,
@@ -174,6 +183,56 @@ def crud_save_message(chat_id: int, sender_id: int, message: MessageCreate, db: 
         created_at=datetime.now(timezone.utc),
     )
     db.add(new_message)
+    db.flush()
+    
+    for user_id in participant_ids:
+        if user_id != sender_id:
+            msg_status = MessageStatus(
+                message_id = new_message.id,
+                user_id = user_id,
+                status = MessageStatusEnum.sent
+            )
+            db.add(msg_status)
+            
+    
     db.commit()
     db.refresh(new_message)
     return new_message
+    
+    
+   
+def crud_get_chat_history(chat_id:int, current_user_id:int, db:Session, limit: int, offset:int = 0):
+    participant = db.query(ChatParticipants).filter(
+        ChatParticipants.chat_id == chat_id,
+        ChatParticipants.user_id == current_user_id
+    ).first()
+   
+    if not participant:
+        raise HTTPException(status_code=403, detail="You do not have access to this chat's history.")
+    
+    messages = (
+        db.query(Messages)
+        .filter(Messages.chat_id == chat_id)
+        .order_by(Messages.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    
+    return messages[::-1]
+   
+    
+def crud_update_message_status(message_id:int, current_user_id:int, new_status:MessageStatusEnum, db:Session):
+    msg_status = db.query(MessageStatus).filter(
+        MessageStatus.message_id == message_id,
+        MessageStatus.user_id == current_user_id
+    ).first()
+    
+    if not msg_status:
+        raise HTTPException(status_code=404, detail="Message status not found or you are not a recipient.")
+    
+    msg_status.status = new_status
+    db.commit()
+    db.refresh(msg_status)
+    
+    return msg_status
