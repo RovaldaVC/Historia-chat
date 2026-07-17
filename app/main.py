@@ -119,7 +119,7 @@ def send_message(
     return crud_save_message(chat_id, sender_id, message, db)
 
 @app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)) -> None:
+async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> None:
     token = websocket.query_params.get("token")
     chat_id_query = websocket.query_params.get("chat_id")
 
@@ -134,7 +134,7 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
 
     user_id = session_record.user_id
 
-    await manager.connect(websocket)
+    await manager.connect(websocket, current_user.id)
     try:
         while True:
             raw_data = await websocket.receive_text()
@@ -183,5 +183,5 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
             await manager.send_personal_message(outgoing_message, websocket)
             await manager.broadcast(outgoing_message, sender=websocket)
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        manager.disconnect(websocket, current_user.id)
         await manager.broadcast(f"Client #{user_id} left the chat")
