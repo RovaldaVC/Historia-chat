@@ -1,7 +1,7 @@
 from ..database.database import Base
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime, Enum
 from sqlalchemy.orm import relationship
-
+import enum
 
 class User(Base):
     __tablename__ = "users"
@@ -38,6 +38,7 @@ class ChatParticipants(Base):
     chat_id = Column(Integer, ForeignKey("chats.id", ondelete="CASCADE"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     joined_at = Column(DateTime, nullable=False)
+    
     user = relationship("User")
     chat = relationship("Chat")
 
@@ -53,3 +54,20 @@ class Messages(Base):
 
     chat = relationship("Chat")
     participant = relationship("ChatParticipants")
+    
+    
+    
+    
+class MessageStatusEnum(enum.Enum):
+    sent = "sent",
+    delivered = "delivered"
+    read = "read"
+class MessageStatus(Base):
+    __tablename__ = "message_status"
+    id = Column(Integer, primary_key=True, index=True)
+    message_id = Column(Integer, ForeignKey("messages.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    status = Column(Enum(MessageStatusEnum), default=MessageStatusEnum.sent, nullable=False)
+    
+    user = relationship("User")
+    messages = relationship("Messages")
