@@ -100,7 +100,7 @@ def crud_logout(response: Response, request: Request, db: Session = Depends(get_
 
 def crud_create_chat(current_user_id: int, other_user_id: int, chat: ChatCreate, db: Session):
     if current_user_id == other_user_id:
-        raise HTTPException(status_code=400, detail="You cannot create a private chat with yourself.")
+        raise HTTPException(status_code=400, detail="You cannot create a private chat with yourself.") # Create Save messages later.
 
     existing_chat = (
         db.query(Chat)
@@ -110,7 +110,7 @@ def crud_create_chat(current_user_id: int, other_user_id: int, chat: ChatCreate,
             ChatParticipants.user_id.in_([current_user_id, other_user_id]),
         )
         .group_by(Chat.id)
-        .having(db.query(ChatParticipants).filter(ChatParticipants.chat_id == Chat.id).count() == 2) # type: ignore
+        .having(db.query(ChatParticipants).filter(ChatParticipants.chat_id == Chat.id).count() == 2)
         .first()
     )
 
@@ -129,7 +129,7 @@ def crud_create_chat(current_user_id: int, other_user_id: int, chat: ChatCreate,
         participant = ChatParticipants(
             chat_id=new_chat.id,
             user_id=user_id,
-            joined_at=datetime.now(timezone.utc),
+            joined_at=datetime.now(timezone.utc), # For creating Groupchat joined_at is needed, but here it's private chat! there is no need for joined_at, but for consistency, we can keep it.
         )
         db.add(participant)
 
