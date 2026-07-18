@@ -91,7 +91,7 @@ def crud_logout(response: Response, request: Request, db: Session = Depends(get_
     
     if raw_session_token:
         hashed_session_token = hash_session(raw_session_token)
-        db.query(UserSession).filter(UserSession.session_token == hashed_session_token).delete()
+        db.query(UserSession).filter(UserSession.token_hash == hashed_session_token).delete()
         db.commit()
     
     response.delete_cookie(COOKIE_NAME)

@@ -17,12 +17,10 @@ class User(Base):
 class UserSession(Base):
     __tablename__ = "user_sessions"
     id = Column(Integer, primary_key=True, index=True)
-    session_token = Column(String(255), unique=True, index=True, nullable=False)
+    token_hash = Column(String(64), unique=True, index=True, nullable=False) # I'm removing bcrypt.
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     expires_at = Column(DateTime, nullable=False)
     user = relationship("User")
-
-
     
 class Chat(Base):
     __tablename__ = "chats"

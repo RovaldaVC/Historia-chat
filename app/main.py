@@ -197,7 +197,7 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
 
             saved_message = crud_save_message(
                 chat_id,
-                user_id,
+                user_id, # don't use participant.id, use user_id instead.
                 MessageCreate(content=content),
                 db,
             )
