@@ -82,9 +82,9 @@ def crud_login(form_data_username: str, form_data_password: str, db: Session) ->
     if not user.active: # type: ignore
         raise HTTPException(status_code=403, detail="User account is not active.")
     
-    session_token = create_session(db, user.id) # type: ignore
+    hashed_token = create_session(db, user.id)
     
-    return {"session_token": session_token, "user_name": user.name}
+    return {"session_token": hashed_token, "user_name": user.name}
 
 def crud_logout(response: Response, request: Request, db: Session = Depends(get_db)) -> dict:
     raw_session_token = request.cookies.get(COOKIE_NAME)

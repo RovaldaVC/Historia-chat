@@ -19,7 +19,7 @@ def create_session(db: Session, user_id: int) -> str:
     expires = datetime.now(timezone.utc) + timedelta(days=SESSION_EXPIRE_DAYS)
     
     new_session = UserSession(
-        session_token=hashed_token,
+        token_hash=hashed_token, # no session_token inside Usersession anymore.
         user_id=user_id,
         expires_at=expires
     )
