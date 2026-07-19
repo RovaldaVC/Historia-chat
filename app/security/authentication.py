@@ -1,6 +1,6 @@
 import secrets
 from datetime import datetime, timezone, timedelta
-from fastapi import Request, HTTPException, Depends, status
+from fastapi import Request, HTTPException, Depends, status, WebSocket
 from sqlalchemy.orm import Session
 from ..database.database import get_db
 from ..database.models import User, UserSession, ChatParticipants
@@ -19,7 +19,7 @@ def create_session(db: Session, user_id: int) -> str:
     expires = datetime.now(timezone.utc) + timedelta(days=SESSION_EXPIRE_DAYS)
     
     new_session = UserSession(
-        token_hash=hashed_token, # no session_token inside Usersession anymore.
+        token_hash=hashed_token,
         user_id=user_id,
         expires_at=expires
     )
@@ -86,3 +86,17 @@ def get_current_admin_user(current_user: User = Depends(get_current_user)) -> Us
             detail="You do not have permission to perform this action."
         )
     return current_user
+
+
+
+
+def get_current_user_from_web(websocket: WebSocket, db: Session) -> User:
+    raw_token = websocket.cookies.get(COOKIE_NAME) or websocket.query_params.get("token")
+    if not raw_token:
+        raise ValueError("No session token")
+
+    session_record = verify_session(db, raw_token)
+    if session_record is None or not session_record.user.active:
+        raise ValueError("Invalid session")
+
+    return session_record.user

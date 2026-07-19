@@ -22,7 +22,7 @@ from .database.crud import (
     crud_get_chat_history, 
     crud_update_message_status
 )
-from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user, get_current_chat_participant_id
+from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user, get_current_chat_participant_id, get_current_user_from_web
 from fastapi.security import OAuth2PasswordRequestForm
 from .security.hash_session import verify_session
 from .websocket.manager import manager
@@ -141,20 +141,15 @@ def update_message_status(
 
 
 @app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> None:
-    token = websocket.query_params.get("token")
+async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)) -> None:
     chat_id_query = websocket.query_params.get("chat_id")
 
-    if not token:
+    try:
+        current_user = get_current_user_from_web(websocket, db)
+    except ValueError:
+        await websocket.accept()
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Unauthorized")
         return
-
-    session_record = verify_session(db, token)
-    if not session_record or not session_record.user.active:
-        await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Invalid or expired session")
-        return
-
-    user_id = session_record.user_id
 
     await manager.connect(websocket, current_user.id)
     try:
@@ -187,7 +182,7 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
                 db.query(ChatParticipants)
                 .filter(
                     ChatParticipants.chat_id == chat_id,
-                    ChatParticipants.user_id == user_id,
+                    ChatParticipants.user_id == current_user.id,
                 )
                 .first()
             )
@@ -201,9 +196,9 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
                 MessageCreate(content=content),
                 db,
             )
-            outgoing_message = f"{session_record.user.name}: {saved_message.content}"
+            outgoing_message = f"{current_user.name}: {saved_message.content}"
             await manager.send_personal_message(outgoing_message, websocket)
             await manager.broadcast(outgoing_message, sender=websocket)
     except WebSocketDisconnect:
         manager.disconnect(websocket, current_user.id)
-        await manager.broadcast(f"Client #{user_id} left the chat")
+        await manager.broadcast(f"Client #{current_user.id} left the chat")

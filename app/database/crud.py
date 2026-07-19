@@ -170,12 +170,12 @@ def crud_save_message(chat_id: int, sender_id: int, message: MessageCreate, db: 
     participants = db.query(ChatParticipants).filter(
         ChatParticipants.chat_id == chat_id
     ).all()
-    
-    participant_ids = [p.user_id for p in participants]
-    
+
+    participant_ids = [p.id for p in participants]
+
     if sender_id not in participant_ids:
         raise HTTPException(status_code=403, detail="You are not a participant of this chat room.")
-    
+
     new_message = Messages(
         chat_id=chat_id,
         sender_id=sender_id,
@@ -184,17 +184,16 @@ def crud_save_message(chat_id: int, sender_id: int, message: MessageCreate, db: 
     )
     db.add(new_message)
     db.flush()
-    
-    for user_id in participant_ids:
-        if user_id != sender_id:
+
+    for participant in participants:
+        if participant.id != sender_id:
             msg_status = MessageStatus(
-                message_id = new_message.id,
-                user_id = user_id,
-                status = MessageStatusEnum.sent
+                message_id=new_message.id,
+                user_id=participant.user_id,
+                status=MessageStatusEnum.sent,
             )
             db.add(msg_status)
-            
-    
+
     db.commit()
     db.refresh(new_message)
     return new_message

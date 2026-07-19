@@ -25,6 +25,3 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
-
-
-# Since we changed our manage.py, now we have to do the implementations inside our main.py wherever we used manager!
