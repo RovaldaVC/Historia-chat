@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
-
+import enum
+from datetime import datetime
 
 class UserCreate(BaseModel):
     name: str
@@ -43,3 +44,31 @@ class ChatCreate(BaseModel):
     
 class MessageCreate(BaseModel):
     content: str = Field(..., min_length=1, max_length=1000)
+    
+
+class MessageHistoryResponse(BaseModel):
+    sender_id: int
+    content: str
+    created_at: str
+    
+    class Config:
+        from_attributes = True
+
+class ChatList(BaseModel):
+    name: str
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class UserStatusEnum(enum.Enum):
+    offline = "offline"
+    online = "online"
+class UserPresenceResponse(BaseModel):
+    user_id: int
+    status: UserStatusEnum
+    last_seen_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
