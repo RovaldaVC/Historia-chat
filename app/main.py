@@ -163,6 +163,34 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
             if isinstance(payload, str):
                 payload = {"content": payload}
 
+            event = payload.get("event")
+            if event == "typing":
+                chat_id = payload.get("chat_id") or chat_id_query
+                if chat_id is None:
+                    await websocket.send_text("Missing chat_id")
+                    continue
+
+                try:
+                    chat_id = int(chat_id)
+                except (TypeError, ValueError):
+                    await websocket.send_text("Invalid chat_id")
+                    continue
+
+                typing = payload.get("typing")
+                if typing is None:
+                    continue
+
+                await manager.broadcast(
+                    {
+                        "event": "typing",
+                        "chat_id": chat_id,
+                        "user_id": current_user.id,
+                        "typing": bool(typing),
+                    },
+                    sender=websocket,
+                )
+                continue
+
             content = payload.get("content")
             if not content:
                 continue

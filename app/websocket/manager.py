@@ -12,14 +12,19 @@ class ConnectionManager:
     def disconnect(self, websocket: WebSocket, user_id:int):
         self.active_connections.get(user_id, set()).discard(websocket)
 
-    async def send_personal_message(self, message: str, websocket: WebSocket):
-        await websocket.send_text(message)
+    async def send_personal_message(self, message: str | dict, websocket: WebSocket):
+        if isinstance(message, dict):
+            await websocket.send_json(message)
+        else:
+            await websocket.send_text(message)
 
-    async def broadcast(self, message: str, sender: WebSocket | None = None):
+    async def broadcast(self, message: str | dict, sender: WebSocket | None = None):
         for key, values in list(self.active_connections.items()):
             for value in list(values):
                 if value is sender:
                     continue
+                if isinstance(message, dict):
+                    await value.send_json(message)
                 else:
                     await value.send_text(message)
 
