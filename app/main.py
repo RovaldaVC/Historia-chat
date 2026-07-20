@@ -7,7 +7,7 @@ import os
 import json
 from .database.database import get_db, engine, Base
 from .database.models import User, ChatParticipants, MessageStatusEnum, UserPresence, UserStatusEnum
-from .database.schemas import UserResponse, UserCreate, UserUpdate, MessageCreate, ChatCreate
+from .database.schemas import UserResponse, UserCreate, UserUpdate, MessageCreate, ChatCreate, ChatList, MessageHistoryResponse
 from datetime import datetime, timezone
 from .database.crud import (
     crud_get_user,
@@ -122,7 +122,7 @@ def send_message(
 ) -> dict:
     return crud_save_message(chat_id, sender_id, message, db)
 
-@app.get("/chats/{chat_id}/messages")
+@app.get("/chats/{chat_id}/messages", response_model=list[MessageHistoryResponse])
 def get_chat_history(
     chat_id: int,
     limit: int = 50,
@@ -142,7 +142,7 @@ def update_message_status(
     return crud_update_message_status(message_id, current_user.id, new_status, db)
 
 
-@app.get("/my-chats")
+@app.get("/my-chats", response_model=list[ChatList])
 def get_user_chats(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)

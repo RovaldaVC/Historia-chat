@@ -34,8 +34,7 @@ class UserResponse(BaseModel):
     role: str
     active: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
         
         
         
@@ -51,16 +50,17 @@ class MessageHistoryResponse(BaseModel):
     content: str
     created_at: str
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ChatList(BaseModel):
+    id: int
     name: str
+    is_grouped:bool
     created_at: datetime
+    last_message: Optional[str] = None
+    last_message_time: Optional[datetime] = None
     
-    class Config:
-        from_attributes = True
-
+    model_config = ConfigDict(from_attributes=True) # I found out for Pydantic versian 2 we have to use it like that.
 
 class UserStatusEnum(enum.Enum):
     offline = "offline"
@@ -70,5 +70,4 @@ class UserPresenceResponse(BaseModel):
     status: UserStatusEnum
     last_seen_at: Optional[datetime] = None
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

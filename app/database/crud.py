@@ -237,11 +237,54 @@ def crud_update_message_status(message_id:int, current_user_id:int, new_status:M
     return msg_status
 
 def crud_get_user_chats(current_user: User, db:Session):
-    chats = (
+    user_chats = (
         db.query(Chat)
         .join(ChatParticipants, Chat.id == ChatParticipants.chat_id)
         .filter(ChatParticipants.user_id == current_user.id)
         .all()
     )
     
-    return chats
+    chat_summaries = []
+    
+    for chat in user_chats:
+        last_msg = (
+            db.query(Messages)
+            .filter(Messages.chat_id == chat.id)
+            .order_by(Messages.created_at.desc())
+            .first()
+        )
+        
+        chat_summaries.append({
+            "id": chat.id,
+            "name": chat.name,
+            "is_group": chat.is_group,
+            "created_at": chat.created_at,
+            "last_message": last_msg.content if last_msg else None,
+            "last_message_time": last_msg.created_at if last_msg else None
+        })
+        
+        chat_summaries.sort(
+            key=lambda x: x["last_message_time"] or x["created_at"], 
+            reverse=True
+        )
+        
+        return chat_summaries
+    
+    
+def crud_get_chat_history(chat_id:int, user_id:int, db:Session, limit:int=50, offset: int = 0):
+    messages = (
+        db.query(Messages)
+        .filter(Messages.chat_id == chat_id)
+        .order_by(Messages.created_at.desc())
+        .limit(limit)
+        .offset(offset)
+        .all()
+    )
+    for msg in messages:
+        return[
+            {
+                "sender_id": msg.sender,
+                "content": msg.content,
+                "created_at": msg.created_at.isoformat()
+            }
+        ]
