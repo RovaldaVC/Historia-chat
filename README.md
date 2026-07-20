@@ -1,6 +1,6 @@
-# Text Message App (Beta)
+# Historia Chat
 
-A simple text messaging application built with **FastAPI** and a **SQL database**.
+Historia-chat is a text messaging application backend built with FastAPI. It handles real-time delivery over WebSockets, persists messages in a SQL database, and includes a dedicated security module for authentication, with interactive API docs via Swagger UI and ReDoc. Currently in active beta development.
 
 > ⚠️ Beta version — under active development.
 
@@ -38,5 +38,5 @@ Once the server is running, interactive docs are available at:
 - Swagger UI: http://127.0.0.1:8000/docs
 - ReDoc: http://127.0.0.1:8000/redoc
 
-## Licsence
+## License
 MIT
