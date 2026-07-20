@@ -26,7 +26,6 @@ from .database.crud import (
 )
 from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user, get_current_chat_participant_id, get_current_user_from_web
 from fastapi.security import OAuth2PasswordRequestForm
-from .security.hash_session import verify_session
 from .websocket.manager import manager
 
 logger = logging.getLogger(__name__)

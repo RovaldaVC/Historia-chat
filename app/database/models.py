@@ -1,8 +1,10 @@
+# -- Imports -- #
 from ..database.database import Base
 from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime, Enum
 from sqlalchemy.orm import relationship
 import enum
 
+# Table made for all users inside our app.
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
@@ -13,15 +15,16 @@ class User(Base):
     role = Column(String(255), nullable=False, default="user")
     active = Column(Boolean, default=False)
 
-
+# Table for all Sessions and cookies saved via browser.
 class UserSession(Base):
     __tablename__ = "user_sessions"
     id = Column(Integer, primary_key=True, index=True)
-    token_hash = Column(String(64), unique=True, index=True, nullable=False) # I'm removing bcrypt.
+    token_hash = Column(String(64), unique=True, index=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     expires_at = Column(DateTime, nullable=False)
     user = relationship("User")
     
+# This table saves all the chats(not the messages)
 class Chat(Base):
     __tablename__ = "chats"
     id = Column(Integer, primary_key=True, index=True)
@@ -29,7 +32,7 @@ class Chat(Base):
     is_group = Column(Boolean, default=False)
     created_at = Column(DateTime, nullable=False)
     
-
+# This tables helps us Control User/Chat tables so they can share theit data and validate eachother.
 class ChatParticipants(Base):
     __tablename__ = "chat_participants"
     id = Column(Integer, primary_key=True, index=True)
@@ -40,7 +43,7 @@ class ChatParticipants(Base):
     user = relationship("User")
     chat = relationship("Chat")
 
-
+# This table saves the messages of all Chats, it has connection to Chat/ChatParticipant table.
 class Messages(Base):
     __tablename__ = "messages"
 
@@ -55,11 +58,14 @@ class Messages(Base):
     
     
     
-    
+# This is an enum that helps us handle different status at once.
+# enum means choose one option from different options
 class MessageStatusEnum(enum.Enum):
     sent = "sent",
     delivered = "delivered"
     read = "read"
+    
+# Here the status is handles, this table connects User/Message Table and labels the chats. 
 class MessageStatus(Base):
     __tablename__ = "message_status"
     id = Column(Integer, primary_key=True, index=True)
@@ -71,12 +77,17 @@ class MessageStatus(Base):
     messages = relationship("Messages")
     
     
-
+# This enum handles online/offline options.
+# enum means choose one option from different options
 class UserStatusEnum(enum.Enum):
     offline = "offline"
     online = "online"
+
+# This table handles if user is online or offline, also saves the last seen.
 class UserPresence(Base):
     __tablename__ = "user_presence"
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
     status = Column(Enum(UserStatusEnum), default=UserStatusEnum.offline, nullable=False)
     last_seen_at = Column(DateTime, nullable=True)
+    
+    user = relationship("User") #Forgot to add it back then.

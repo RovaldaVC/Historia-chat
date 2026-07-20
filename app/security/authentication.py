@@ -1,3 +1,4 @@
+# -- Imports -- #
 import secrets
 from datetime import datetime, timezone, timedelta
 from fastapi import Request, HTTPException, Depends, status, WebSocket
@@ -6,9 +7,11 @@ from ..database.database import get_db
 from ..database.models import User, UserSession, ChatParticipants
 from ..security.hash_session import hash_session, verify_session
 
+# Token setting, expire time and cookie name.
 SESSION_EXPIRE_DAYS = 7
 COOKIE_NAME = "historia_session"
 
+# this is the core logic of creating a new session when user logs in.
 def create_session(db: Session, user_id: int) -> str:
     db.query(UserSession).filter(
         UserSession.user_id == user_id
@@ -27,6 +30,7 @@ def create_session(db: Session, user_id: int) -> str:
     db.commit()
     return raw_token
 
+# here we can get the current user based on the cookie he is using inside browser.
 def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     raw_token = request.cookies.get(COOKIE_NAME)
     
@@ -55,7 +59,8 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
 
 
 
-
+# by the current user logic we can get the participant id of a chat, chat_id is also needed.
+# frontend will handle the chat_id. when a user clicks on a chat the chat_id will be imported inside args and then we can get it via there.
 def get_current_chat_participant_id(
     chat_id: int,
     current_user: User = Depends(get_current_user),
@@ -78,7 +83,7 @@ def get_current_chat_participant_id(
 
     return participant.id
 
-
+# based on get_current_user we check if the user is admin or not.
 def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
     if current_user.role != "admin":
         raise HTTPException(
@@ -89,7 +94,7 @@ def get_current_admin_user(current_user: User = Depends(get_current_user)) -> Us
 
 
 
-
+# Websockets have different way of handling the get_current_user, we use websocket.cookies.get for production level rather than websocket.query_params.get because it has lower security.
 def get_current_user_from_web(websocket: WebSocket, db: Session) -> User:
     raw_token = websocket.cookies.get(COOKIE_NAME) or websocket.query_params.get("token")
     if not raw_token:
