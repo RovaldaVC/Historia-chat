@@ -20,7 +20,8 @@ from .database.crud import (
     crud_create_chat,
     crud_create_group_chat,
     crud_get_chat_history, 
-    crud_update_message_status
+    crud_update_message_status,
+    crud_get_user_chats
 )
 from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user, get_current_chat_participant_id, get_current_user_from_web
 from fastapi.security import OAuth2PasswordRequestForm
@@ -138,6 +139,14 @@ def update_message_status(
     current_user: User = Depends(get_current_user)
 ):
     return crud_update_message_status(message_id, current_user.id, new_status, db)
+
+
+@app.get("/my-chats")
+def get_user_chats(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    crud_get_user_chats(current_user, db)
 
 
 @app.websocket("/ws")

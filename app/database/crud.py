@@ -235,3 +235,13 @@ def crud_update_message_status(message_id:int, current_user_id:int, new_status:M
     db.refresh(msg_status)
     
     return msg_status
+
+def crud_get_user_chats(current_user: User, db:Session):
+    chats = (
+        db.query(Chat)
+        .join(ChatParticipants, Chat.id == ChatParticipants.chat_id)
+        .filter(ChatParticipants.user_id == current_user.id)
+        .all()
+    )
+    
+    return chats
