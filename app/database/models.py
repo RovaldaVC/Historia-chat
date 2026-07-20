@@ -69,3 +69,14 @@ class MessageStatus(Base):
     
     user = relationship("User")
     messages = relationship("Messages")
+    
+    
+
+class UserStatusEnum(enum.Enum):
+    offline = "offline"
+    online = "online"
+class UserPresence(Base):
+    __tablename__ = "user_presence"
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    status = Column(Enum(UserStatusEnum), default=UserStatusEnum.offline, nullable=False)
+    last_seen_at = Column(DateTime, nullable=True)
