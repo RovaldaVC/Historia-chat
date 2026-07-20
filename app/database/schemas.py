@@ -52,7 +52,7 @@ class MessageHistoryResponse(BaseModel):
     
     model_config = ConfigDict(from_attributes=True)
 
-class ChatList(BaseModel):
+class ChatListResponse(BaseModel):
     id: int
     name: str
     is_grouped:bool
