@@ -6,8 +6,9 @@ import logging
 import os
 import json
 from .database.database import get_db, engine, Base
-from .database.models import User, ChatParticipants, MessageStatusEnum
+from .database.models import User, ChatParticipants, MessageStatusEnum, UserPresence, UserStatusEnum
 from .database.schemas import UserResponse, UserCreate, UserUpdate, MessageCreate, ChatCreate
+from datetime import datetime, timezone
 from .database.crud import (
     crud_get_user,
     crud_sign_up,
@@ -161,6 +162,15 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
         return
 
     await manager.connect(websocket, current_user.id)
+    # -- User Goes Online -- #
+    presence = db.query(UserPresence).filter(UserPresence.user_id == current_user.id).first()
+    if not presence:
+        presence = UserPresence(user_id = current_user.id, status=UserStatusEnum.online)
+        db.add(presence)
+    else:
+        presence.status = UserStatusEnum.online
+    db.commit()
+    
     try:
         while True:
             raw_data = await websocket.receive_text()
@@ -238,4 +248,11 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
             await manager.broadcast(outgoing_message, sender=websocket)
     except WebSocketDisconnect:
         manager.disconnect(websocket, current_user.id)
+        
+        presence = db.query(UserPresence).filter(UserPresence.user_id == current_user.id).first()
+        if presence:
+            presence.status = UserStatusEnum.offline
+            presence.last_seen_at = datetime.now(timezone.utc)
+            db.commit()
+        
         await manager.broadcast(f"Client #{current_user.id} left the chat")
