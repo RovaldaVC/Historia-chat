@@ -24,7 +24,7 @@ from .database.crud import (
     crud_update_message_status,
     crud_get_user_chats
 )
-from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user, get_current_chat_participant_id, get_current_user_from_web
+from .security.authentication import COOKIE_NAME, get_current_admin_user, get_current_user, get_current_chat_participant_id, get_current_user_from_websocket
 from fastapi.security import OAuth2PasswordRequestForm
 from .websocket.manager import manager
 
@@ -154,7 +154,7 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
     chat_id_query = websocket.query_params.get("chat_id")
 
     try:
-        current_user = get_current_user_from_web(websocket, db)
+        current_user = get_current_user_from_websocket(websocket, db)
     except ValueError:
         await websocket.accept()
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="Unauthorized")

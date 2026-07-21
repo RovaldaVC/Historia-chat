@@ -21,7 +21,7 @@ class UserSession(Base):
     id = Column(Integer, primary_key=True, index=True)
     token_hash = Column(String(64), unique=True, index=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    expires_at = Column(DateTime, nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
     user = relationship("User")
     
 # This table saves all the chats(not the messages)
@@ -30,7 +30,7 @@ class Chat(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     is_group = Column(Boolean, default=False)
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False)
     
 # This tables helps us Control User/Chat tables so they can share theit data and validate eachother.
 class ChatParticipants(Base):
@@ -38,7 +38,7 @@ class ChatParticipants(Base):
     id = Column(Integer, primary_key=True, index=True)
     chat_id = Column(Integer, ForeignKey("chats.id", ondelete="CASCADE"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    joined_at = Column(DateTime, nullable=False)
+    joined_at = Column(DateTime(timezone=True), nullable=False)
     
     user = relationship("User")
     chat = relationship("Chat")
@@ -51,7 +51,7 @@ class Messages(Base):
     chat_id = Column(Integer, ForeignKey("chats.id", ondelete="CASCADE"), nullable=False)
     sender_id = Column(Integer, ForeignKey("chat_participants.id", ondelete="SET NULL"), nullable=False)
     content = Column(String(1000), nullable=False)
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False)
 
     chat = relationship("Chat")
     participant = relationship("ChatParticipants")
@@ -88,6 +88,18 @@ class UserPresence(Base):
     __tablename__ = "user_presence"
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
     status = Column(Enum(UserStatusEnum), default=UserStatusEnum.offline, nullable=False)
-    last_seen_at = Column(DateTime, nullable=True)
+    last_seen_at = Column(DateTime(timezone=True), nullable=True)
     
-    user = relationship("User") #Forgot to add it back then.
+    user = relationship("User")
+    
+    
+class RefreshTokens(Base):
+    __tablename__ = "refresh_tokens"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    token_hash = Column(String(64), ForeignKey("user_sessions.token_hash", ondelete="CASCADE"), unique=True, index=True, nullable=False)
+    expires_at = Column(DateTime(timezone=True), ForeignKey("user_session.expires_at"), nullable=False)
+
+
+    user = relationship("User")
+    user_session = relationship("UserSession")

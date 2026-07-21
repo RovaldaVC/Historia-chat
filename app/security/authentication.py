@@ -8,14 +8,36 @@ from ..database.models import User, UserSession, ChatParticipants
 from ..security.hash_session import hash_session, verify_session
 
 # Token setting, expire time and cookie name.
-SESSION_EXPIRE_DAYS = 7
+SESSION_EXPIRE_DAYS = 7 
 COOKIE_NAME = "historia_session"
+MAX_SESSIONS_PER_USER = 5
 
-# this is the core logic of creating a new session when user logs in.
-def create_session(db: Session, user_id: int) -> str:
+# No need to use anymore. since we have the MAX_SESSION_PER_USER logic.
+def revoke_all_sessions(db:Session, user_id:int) -> None:
     db.query(UserSession).filter(
         UserSession.user_id == user_id
     ).delete()
+
+# This part is used insde crud_logout.
+def delete_session(db:Session, raw_token:str) -> None:
+    db.query(UserSession).filter(
+        UserSession.token_hash == hash_session(raw_token)
+    ).delete()
+    db.commit()
+
+
+# this is the core logic of creating a new session when user logs in.
+def create_session(db: Session, user_id: int) -> str:
+    sessions = (
+        db.query(UserSession)
+        .filter(UserSession.user_id == user_id)
+        .order_by(UserSession.expires_at.asc())
+        .all()
+    )
+    if len(sessions) >= MAX_SESSIONS_PER_USER:
+        for old in sessions[: len(sessions) - MAX_SESSIONS_PER_USER + 1]:
+            db.delete(old)
+    
     
     raw_token = secrets.token_urlsafe(32)
     hashed_token = hash_session(raw_token)
@@ -95,7 +117,7 @@ def get_current_admin_user(current_user: User = Depends(get_current_user)) -> Us
 
 
 # Websockets have different way of handling the get_current_user, we use websocket.cookies.get for production level rather than websocket.query_params.get because it has lower security.
-def get_current_user_from_web(websocket: WebSocket, db: Session) -> User:
+def get_current_user_from_websocket(websocket: WebSocket, db: Session) -> User:
     raw_token = websocket.cookies.get(COOKIE_NAME) or websocket.query_params.get("token")
     if not raw_token:
         raise ValueError("No session token")

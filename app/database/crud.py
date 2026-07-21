@@ -4,8 +4,7 @@ from ..database.models import User, UserSession, Chat, ChatParticipants, Message
 from ..database.schemas import UserCreate, UserUpdate, ChatCreate, MessageCreate
 from ..database.database import get_db
 from ..security.hash_password import get_password_hash, verify_password
-from ..security.authentication import create_session, COOKIE_NAME
-from ..security.hash_session import hash_session
+from ..security.authentication import create_session, COOKIE_NAME, delete_session, verify_session, create_refresh_token
 from fastapi import HTTPException, Depends, Response, Request
 from sqlalchemy.orm import Session
 
@@ -100,10 +99,8 @@ def crud_logout(response: Response, request: Request, db: Session = Depends(get_
     raw_session_token = request.cookies.get(COOKIE_NAME)
     
     if raw_session_token:
-        hashed_session_token = hash_session(raw_session_token)
-        db.query(UserSession).filter(UserSession.token_hash == hashed_session_token).delete()
-        db.commit()
-    
+        delete_session(db, raw_session_token)
+        
     response.delete_cookie(COOKIE_NAME)
     return {"message": "Successfully logged out."}
 
@@ -301,6 +298,15 @@ def crud_get_chat_history(chat_id:int, user_id:int, db:Session, limit:int=50, of
             }
         ]
         
-        
+
+def crud_refresh_session(raw_refresh_token: str, db: Session) -> dict:
+    token_record = verify_session(db, raw_refresh_token)
+    if token_record is None:
+        raise HTTPException(status_code=401, detail="Refresh token expired or invalid.")
+
+    new_session_token = create_session(db, token_record.user_id)
+    return {"session_token": new_session_token} # This refresh_session should use something else instead of verify_session; a new one that can find out expire time is near, so it creates a new session and then deletes the old one when user dissconects from websocket! i have to check it inside websocket when user gets online. So for now this doesn't work at all and is not ready.
+
+
 # Later we can lable all the cruds by saving them inside different classes
 # For example class Crud User_web_work and inside it functions won't have crud as their name anymore, then we have to fix the imports too.
