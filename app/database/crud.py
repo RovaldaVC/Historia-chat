@@ -1,19 +1,24 @@
+# -- Imports -- #
 from datetime import datetime, timezone
 from ..database.models import User, UserSession, Chat, ChatParticipants, Messages, MessageStatus, MessageStatusEnum
-from ..database.schemas import UserCreate, UserUpdate, UserResponse, ChatCreate, MessageCreate
+from ..database.schemas import UserCreate, UserUpdate, ChatCreate, MessageCreate
 from ..database.database import get_db
 from ..security.hash_password import get_password_hash, verify_password
 from ..security.authentication import create_session, COOKIE_NAME
 from ..security.hash_session import hash_session
-from fastapi import HTTPException, Depends, Response, Request, status
+from fastapi import HTTPException, Depends, Response, Request
 from sqlalchemy.orm import Session
 
+# -- Here we can see all the endpoint logic's inside main.py -- #
+
+# Here we can get user based on their id.
 def crud_get_user(user_id: int, db: Session) -> User:
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
     return user
 
+# This is the signup logic behind the endpoint.
 def crud_sign_up(user: UserCreate, db: Session) -> User:
     if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(status_code=422, detail="User already exists.")
@@ -32,6 +37,7 @@ def crud_sign_up(user: UserCreate, db: Session) -> User:
     db.refresh(new_user)
     return new_user
 
+# Logic for updating user
 def crud_update_user(user_id: int, user: UserUpdate, db: Session) -> User:
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
@@ -54,6 +60,7 @@ def crud_update_user(user_id: int, user: UserUpdate, db: Session) -> User:
     db.refresh(db_user)
     return db_user
 
+# Logic of deleting a user, if you are admin you can delete other peoples' account, if not you can only delete your own!
 def crud_delete_user(user_id: int, db: Session) -> dict:
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
@@ -69,10 +76,12 @@ def crud_delete_user(user_id: int, db: Session) -> dict:
     
     return {"message": "User deleted!"}
 
+# Only admins have access to that. They can get all users at once.
 def crud_get_all_users(db: Session) -> list[User]:
     all_users = db.query(User).all()
     return all_users
 
+# Core logic of loggin in to your account.
 def crud_login(form_data_username: str, form_data_password: str, db: Session) -> dict:
     user = db.query(User).filter(User.username == form_data_username).first()
     
@@ -86,6 +95,7 @@ def crud_login(form_data_username: str, form_data_password: str, db: Session) ->
     
     return {"session_token": hashed_token, "user_name": user.name}
 
+# Core logic of logging out of your account, cookie will be removed after that.
 def crud_logout(response: Response, request: Request, db: Session = Depends(get_db)) -> dict:
     raw_session_token = request.cookies.get(COOKIE_NAME)
     
@@ -97,7 +107,7 @@ def crud_logout(response: Response, request: Request, db: Session = Depends(get_
     response.delete_cookie(COOKIE_NAME)
     return {"message": "Successfully logged out."}
 
-
+# This is the logic of creating a new private chat.
 def crud_create_chat(current_user_id: int, other_user_id: int, chat: ChatCreate, db: Session):
     if current_user_id == other_user_id:
         raise HTTPException(status_code=400, detail="You cannot create a private chat with yourself.") # Create Save messages later.
@@ -137,7 +147,7 @@ def crud_create_chat(current_user_id: int, other_user_id: int, chat: ChatCreate,
     db.refresh(new_chat)
     return new_chat
 
-
+# This is the logic of creating a new group chat.
 def crud_create_group_chat(current_user_id: int, participant_ids: list[int], group_chat: ChatCreate, db: Session):
     if not participant_ids:
         raise HTTPException(status_code=400, detail="A group chat needs at least one participant.")
@@ -165,7 +175,7 @@ def crud_create_group_chat(current_user_id: int, participant_ids: list[int], gro
     return new_chat
 
 
-
+# this logic saves all the messages you make, also saves them inside participant for relationship situations.
 def crud_save_message(chat_id: int, sender_id: int, message: MessageCreate, db: Session):
     participants = db.query(ChatParticipants).filter(
         ChatParticipants.chat_id == chat_id
@@ -199,7 +209,7 @@ def crud_save_message(chat_id: int, sender_id: int, message: MessageCreate, db: 
     return new_message
     
     
-   
+# All the messsage history of a chat can be restored based on this logic, messages will be shown by limit = 50 for performance issues.
 def crud_get_chat_history(chat_id:int, current_user_id:int, db:Session, limit: int, offset:int = 0):
     participant = db.query(ChatParticipants).filter(
         ChatParticipants.chat_id == chat_id,
@@ -220,7 +230,7 @@ def crud_get_chat_history(chat_id:int, current_user_id:int, db:Session, limit: i
     
     return messages[::-1]
    
-    
+# status message will be updated, it might be sent, delivered or read.
 def crud_update_message_status(message_id:int, current_user_id:int, new_status:MessageStatusEnum, db:Session):
     msg_status = db.query(MessageStatus).filter(
         MessageStatus.message_id == message_id,
@@ -236,6 +246,8 @@ def crud_update_message_status(message_id:int, current_user_id:int, new_status:M
     
     return msg_status
 
+# Here we have the core logic of getting all chats of the current user. user can see all of his chat's.
+# each chat also shows last message and last message time.
 def crud_get_user_chats(current_user: User, db:Session):
     user_chats = (
         db.query(Chat)
@@ -270,7 +282,7 @@ def crud_get_user_chats(current_user: User, db:Session):
         
         return chat_summaries
     
-    
+# This is the logic for getting all the messages inside a chat.
 def crud_get_chat_history(chat_id:int, user_id:int, db:Session, limit:int=50, offset: int = 0):
     messages = (
         db.query(Messages)
@@ -288,3 +300,7 @@ def crud_get_chat_history(chat_id:int, user_id:int, db:Session, limit:int=50, of
                 "created_at": msg.created_at.isoformat()
             }
         ]
+        
+        
+# Later we can lable all the cruds by saving them inside different classes
+# For example class Crud User_web_work and inside it functions won't have crud as their name anymore, then we have to fix the imports too.
