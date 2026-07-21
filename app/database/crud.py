@@ -300,12 +300,14 @@ def crud_get_chat_history(chat_id:int, user_id:int, db:Session, limit:int=50, of
         
 
 def crud_refresh_session(raw_refresh_token: str, db: Session) -> dict:
+    # inside authentication.py create a get_current_session_from_websocket then use it as your raw_refresh_token here!
     token_record = verify_session(db, raw_refresh_token)
     if token_record is None:
         raise HTTPException(status_code=401, detail="Refresh token expired or invalid.")
 
     new_session_token = create_session(db, token_record.user_id)
-    return {"session_token": new_session_token} # This refresh_session should use something else instead of verify_session; a new one that can find out expire time is near, so it creates a new session and then deletes the old one when user dissconects from websocket! i have to check it inside websocket when user gets online. So for now this doesn't work at all and is not ready.
+    return {"session_token": new_session_token} # This refresh_session should use something else instead of verify_session; a new one that can find out expire time is near, so it creates a new session.
+    # we also have to add a function to delete the old session after crud_refresh_session when user dissconects from websocket! i have to check it inside websocket when user gets online. So for now this doesn't work at all and is not ready. We shouldn't delete all the sessions, we should only delete the one that is near expire time.
 
 
 # Later we can lable all the cruds by saving them inside different classes

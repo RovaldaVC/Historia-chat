@@ -91,15 +91,3 @@ class UserPresence(Base):
     last_seen_at = Column(DateTime(timezone=True), nullable=True)
     
     user = relationship("User")
-    
-    
-class RefreshTokens(Base):
-    __tablename__ = "refresh_tokens"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
-    token_hash = Column(String(64), ForeignKey("user_sessions.token_hash", ondelete="CASCADE"), unique=True, index=True, nullable=False)
-    expires_at = Column(DateTime(timezone=True), ForeignKey("user_session.expires_at"), nullable=False)
-
-
-    user = relationship("User")
-    user_session = relationship("UserSession")
