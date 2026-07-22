@@ -8,9 +8,9 @@ Historia-chat is a text messaging application backend built with FastAPI. It han
 
 **Clone the repository**
 
-git clone <repo-url>
+git clone https://github.com/RovaldaVC/Historia-chat.git
 
-cd <Historia-chat>
+cd Historia-chat
 
 
 **Set up a virtual environment**
