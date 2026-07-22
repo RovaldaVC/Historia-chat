@@ -10,6 +10,13 @@ Historia-chat is a text messaging application backend built with FastAPI. It han
 git clone <repo-url>
 cd <project-folder>
 
+**Set up a virtual environment**
+python3 -m venv venv
+
+**Activate virtual environment**
+source .venv/bin/activate - Linux
+source .venv/Scripts/activate - Windows
+
 **Install dependencies**
 pip install -e .
 
