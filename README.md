@@ -10,7 +10,7 @@ Historia-chat is a text messaging application backend built with FastAPI. It han
 
 git clone <repo-url>
 
-cd <project-folder>
+cd <Historia-chat>
 
 
 **Set up a virtual environment**
