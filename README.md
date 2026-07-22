@@ -82,12 +82,11 @@ The API will be available at http://127.0.0.1:8000.
 
 └── tests # Unit and integration tests - ⚠️ Beta Mode
 
-    ├── test_app_imports.py
+│    ├── test_app_imports.py
     
-    ├── test_chat_creation.py
+│   ├── test_chat_creation.py
     
-    
-    └── test_websocket_message_storage.py
+│   └── test_websocket_message_storage.py
 
 ## API Documentation
 Once the server is running, interactive docs are available at:
