@@ -14,7 +14,7 @@ Currently, only the latest version of the project is actively supported with sec
 Please **do not** report security vulnerabilities through public GitHub issues. 
 
 If you discover a security vulnerability, please report it privately via email to:
-**rovaldavc@gmail.com**
+**arshia.talimian86@gmail.com**
 
 ### Response Timeline
 
